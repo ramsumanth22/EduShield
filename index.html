@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduShield | Disaster Preparedness & Response Education System</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <!-- Lightweight animated background (no heavy video) -->
+    <div class="animated-bg" aria-hidden="true">
+        <span class="bg-orb orb-1"></span><span class="bg-orb orb-2"></span><span class="bg-orb orb-3"></span>
+        <span class="bg-particle p1"></span><span class="bg-particle p2"></span><span class="bg-particle p3"></span><span class="bg-particle p4"></span>
+        <div class="bg-scene">
+            <span class="bg-wave"></span>
+            <span class="bg-ring"></span>
+        </div>
+        <div id="disaster-fx" class="disaster-fx" aria-hidden="true"></div>
+    </div>
+    <canvas id="dynamic-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo" onclick="goDashboard()">
+            <i class="fa-solid fa-earth-americas"></i> EduShield
+        </div>
+        <div class="user-nav" id="user-nav" style="display: none;">
+            <button id="staff-nav-btn" class="btn-outline" style="display: none; margin-right: 0.5rem; color: var(--accent-blue); border-color: var(--accent-blue);" onclick="openStaffDashboard()">
+                <i class="fa-solid fa-chart-line"></i> Staff Portal
+            </button>
+            <button class="nav-link-btn" onclick="goDashboard()"><i class="fa-solid fa-compass"></i> Disaster World</button>
+            <button class="nav-link-btn" onclick="openSurvey()"><i class="fa-solid fa-clipboard-check"></i> Safety Audit</button>
+            <button class="nav-link-btn" onclick="openHelplines()"><i class="fa-solid fa-phone-volume"></i> Helplines</button>
+            <span id="user-display" style="font-weight: 600; color: var(--text-sub); margin-left: 0.5rem;"></span>
+            <button class="btn-outline" onclick="logout()" style="margin-left: 0.5rem;"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+    </nav>
+
+    <!-- AUTH SCREEN -->
+    <div class="view-screen active auth-brush-screen" id="screen-auth">
+        <canvas id="auth-brush-canvas" aria-hidden="true"></canvas>
+        <div class="auth-brush-overlay" aria-hidden="true"></div>
+        <div class="auth-card">
+            <div class="auth-header">
+                <div style="font-size:2.6rem; margin-bottom:0.4rem;">🛡️</div>
+                <h2 id="auth-title">Welcome Back</h2>
+                <p id="auth-sub">Log in to your EduShield account</p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-bottom:1.2rem;">
+                <button type="button" id="role-student-btn" class="btn-submit" onclick="selectAuthRole('student')" style="margin:0;">🎓 Student</button>
+                <button type="button" id="role-staff-btn" class="btn-outline" onclick="selectAuthRole('staff')" style="margin:0;">👨‍🏫 Staff</button>
+            </div>
+            <input type="hidden" id="input-role" value="student">
+
+            <form onsubmit="handleAuth(event)">
+                <div class="form-group" id="group-name" style="display:none; text-align:left;">
+                    <label>Full Name</label>
+                    <input type="text" id="input-name" placeholder="John Doe">
+                </div>
+
+                <div class="form-group" id="group-class" style="display:none; text-align:left;">
+                    <label>Class / Department</label>
+                    <input type="text" id="input-class" placeholder="10-A / Computer Science">
+                </div>
+
+                <div class="form-group" id="group-staff-code" style="display:none; text-align:left;">
+                    <label>Staff Registration Code</label>
+                    <input type="password" id="input-staff-code" placeholder="Enter administrator code">
+                </div>
+
+                <div class="form-group" style="text-align:left;">
+                    <label>Email Address</label>
+                    <input type="email" id="input-email" placeholder="name@domain.com" required>
+                </div>
+                <div class="form-group" style="text-align:left;">
+                    <label>Password</label>
+                    <input type="password" id="input-password" placeholder="At least 6 characters" minlength="6" required>
+                </div>
+                <button type="submit" class="btn-submit" id="auth-submit-btn">Login</button>
+            </form>
+
+            <div class="auth-error" id="auth-error" style="display:none;"></div>
+            <div class="auth-toggle">
+                <span id="auth-toggle-text">Don't have an account? <span onclick="toggleAuthMode()" style="color:var(--accent-blue); cursor:pointer; text-decoration:underline;">Register</span></span>
+            </div>
+        </div>
+    </div>
+    <!-- STUDENT DASHBOARD -->
+    <!-- STUDENT DASHBOARD -->
+    <div class="view-screen" id="screen-dashboard">
+
+        <!-- FULL DASHBOARD BRUSH REVEAL -->
+        <canvas id="dashboard-brush-canvas" aria-hidden="true"></canvas>
+
+        <div class="student-dashboard">
+
+            <section class="student-hero">
+                <div class="hero-copy">
+                    <span class="eyebrow"><i class="fa-solid fa-shield-halved"></i> SCHOOL DISASTER READINESS</span>
+                    <h1>Be Aware<br><span>Be Prepared</span><br>Be Safe</h1>
+                    <p>Learn what to do before, during and after a disaster through interactive lessons, simulations and quizzes.</p>
+                    <div class="hero-actions">
+                        <button class="btn-submit" onclick="openExploreWorld()"><i class="fa-solid fa-person-walking"></i> ENTER DISASTER WORLD</button>
+                        <button class="btn-outline" onclick="openSurvey()"><i class="fa-solid fa-clipboard-check"></i> SAFETY AUDIT</button>
+                    </div>
+                </div>
+                <div class="hero-right-side">
+
+    <!-- Existing Disaster Orbit -->
+                    <div class="disaster-orbit" aria-label="Animated disaster world">
+                        <div class="orbit-ring ring-a"></div>
+                        <div class="orbit-ring ring-b"></div>
+
+                        <div class="orbit-core">
+                            <span>🛡️</span>
+                            <small>READY</small>
+                        </div>
+
+                        <div class="orbit-icon oi-1">🌎</div>
+                        <div class="orbit-icon oi-2">🌪️</div>
+                        <div class="orbit-icon oi-3">🌊</div>
+                        <div class="orbit-icon oi-4">🔥</div>
+                        <div class="orbit-icon oi-5">⛰️</div>
+                        <div class="orbit-icon oi-6">⚠️</div>
+                    </div>
+
+                    <!-- Preparedness Score -->
+                    <div class="hero-preparedness-card">
+
+                        <div class="hero-score-header">
+                            <div class="hero-score-icon">🛡️</div>
+
+                            <div>
+                                <span>YOUR PREPAREDNESS</span>
+                                <small id="hero-preparedness-level">
+                                    Beginner
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="hero-score-content">
+
+                            <div class="hero-score-circle">
+                                <svg viewBox="0 0 120 120">
+                                    <circle
+                                        class="score-track"
+                                        cx="60"
+                                        cy="60"
+                                        r="52">
+                                    </circle>
+
+                                    <circle
+                                        class="score-progress"
+                                        id="hero-score-progress"
+                                        cx="60"
+                                        cy="60"
+                                        r="52">
+                                    </circle>
+                                </svg>
+
+                                <div class="hero-score-number">
+                                    <strong id="hero-total-score">0%</strong>
+                                    <span>READY</span>
+                                </div>
+                            </div>
+
+                            <div class="hero-score-info">
+                                <strong id="hero-score-message">
+                                    Start your journey
+                                </strong>
+
+                                <p>
+                                Complete disaster lessons and quizzes
+                                to improve your preparedness.
+                                </p>
+
+                                <button
+                                    class="hero-score-btn"
+                                    onclick="openExploreWorld()">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                    Continue Learning
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="student-stat-grid">
+                <div class="student-stat-card featured-stat"><div class="stat-icon">🛡️</div><div><span>Preparedness Score</span><strong id="total-score">0%</strong><small id="preparedness-level">Beginner</small></div></div>
+                <div class="student-stat-card"><div class="stat-icon">🧠</div><div><span>Quizzes Completed</span><strong id="quizzes-completed">0</strong><small>Keep learning</small></div></div>
+                <div class="student-stat-card"><div class="stat-icon">📈</div><div><span>Average Quiz Score</span><strong id="average-score">0%</strong><small>Across completed quizzes</small></div></div>
+                <div class="student-stat-card"><div class="stat-icon">🌍</div><div><span>Disasters Completed</span><strong id="disasters-completed">0</strong><small id="dashboard-progress-label">Explore all modules</small></div></div>
+            </section>
+
+            <section class="quick-tools">
+                <div><span class="section-kicker">QUICK ACCESS</span><h2>Your Preparedness Toolkit</h2></div>
+                <div class="tool-grid">
+                    <button class="tool-card" onclick="openSurvey()"><span>🛡️</span><b>Safety Audit</b><small>Check your campus readiness</small></button>
+                    <button class="tool-card" onclick="openHelplines()"><span>☎️</span><b>Emergency Contacts</b><small>Important numbers at a glance</small></button>
+                    <button class="tool-card" onclick="openEmergencyKit()"><span>🎒</span><b>Emergency Kit</b><small>Build your go-bag checklist</small></button>
+                    <button class="tool-card" onclick="openStudentRankings()"><span>🏆</span><b>My Rankings</b><small>See your preparedness points</small></button>
+                </div>
+            </section>
+
+            <section class="disaster-section">
+                <div class="section-heading"><div><span class="section-kicker natural-kicker">NATURAL DISASTERS</span><h2>Know the Threats</h2></div><p>Choose a disaster to learn, prepare, respond and evaluate.</p></div>
+                <div class="disaster-grid" id="grid-natural"></div>
+            </section>
+
+            <section class="disaster-section human-section">
+                <div class="section-heading"><div><span class="section-kicker human-kicker">HUMAN-INDUCED DISASTERS</span><h2>Prepare for Emergencies</h2></div><p>Build practical knowledge for hazards caused by human activity.</p></div>
+                <div class="disaster-grid" id="grid-human"></div>
+            </section>
+
+            <section class="bottom-dashboard-grid">
+                <div class="dashboard-panel progress-panel">
+                    <div class="panel-title"><span>📚</span><div><h3>My Learning Journey</h3><p>Complete modules to increase your readiness.</p></div></div>
+                    <div class="progress-line"><div><span>Overall progress</span><b id="learning-progress">0%</b></div><div class="progress-track"><i id="learning-progress-bar"></i></div></div>
+                    <div class="mini-progress-list">
+                        <div><span>🌎 Natural disasters</span><b id="natural-progress">0%</b></div>
+                        <div><span>🏭 Human-induced</span><b id="human-progress">0%</b></div>
+                    </div>
+                </div>
+                <div class="dashboard-panel tips-panel">
+                    <div class="panel-title"><span>💡</span><div><h3>Daily Safety Tip</h3><p>Small habits make a big difference.</p></div></div>
+                    <div class="safety-tip"><strong id="daily-tip-title">Know your assembly point</strong><p id="daily-tip-text">Every student should know where to report after an evacuation. Ask a staff member if you are unsure.</p></div>
+                </div>
+            </section>
+
+            <section class="student-insight-grid">
+                <div class="dashboard-panel achievements-panel">
+                    <div class="panel-title"><span>🏆</span><div><h3>Achievements</h3><p>Badges earned from your preparedness journey.</p></div></div>
+                    <div id="student-achievements" class="achievement-list"><span class="empty-insight">Complete a quiz to unlock your first badge.</span></div>
+                </div>
+                <div class="dashboard-panel recent-results-panel">
+                    <div class="panel-title"><span>📋</span><div><h3>Recent Quiz Results</h3><p>Your latest learning activity.</p></div></div>
+                    <div id="student-recent-results" class="recent-result-list"><span class="empty-insight">No quiz results yet.</span></div>
+                </div>
+                <div class="dashboard-panel ranking-preview-panel">
+                    <div class="panel-title"><span>🥇</span><div><h3>My Ranking</h3><p>Compare your preparedness points.</p></div></div>
+                    <div class="my-rank-card"><div><small>Current rank</small><strong id="student-rank-value">—</strong></div><div><small>Points</small><strong id="student-rank-points">0</strong></div><div><small>Percentile</small><strong id="student-percentile">—</strong></div></div>
+                    <button class="btn-outline insight-action" onclick="openStudentRankings()">View Full Rankings</button>
+                </div>
+            </section>
+
+            <section class="dashboard-panel preparedness-map-panel">
+                <div class="panel-title"><span>🧭</span><div><h3>Preparedness Map</h3><p>See which disaster modules need more practice.</p></div></div>
+                <div id="student-preparedness-map" class="preparedness-map"></div>
+            </section>
+
+            <section class="student-safety-grid">
+                <div class="dashboard-panel safety-card">
+                    <div class="panel-title"><span>🚨</span><div><h3>Emergency Contacts</h3><p>Keep these numbers accessible.</p></div></div>
+                    <div class="contact-list">
+                        <div><b>112</b><span>National Emergency</span></div>
+                        <div><b>101</b><span>Fire & Rescue</span></div>
+                        <div><b>108</b><span>Emergency Medical</span></div>
+                    </div>
+                    <button class="btn-outline insight-action" onclick="openHelplines()">View Helplines</button>
+                </div>
+                <div class="dashboard-panel safety-card">
+                    <div class="panel-title"><span>📍</span><div><h3>Safe-Zone Reminder</h3><p>Know where to assemble after evacuation.</p></div></div>
+                    <div class="safe-zone-box">
+                        <strong>Assembly Point A</strong>
+                        <span>Follow your school's posted evacuation signs and staff instructions.</span>
+                    </div>
+                    <div class="safe-zone-box">
+                        <strong>Never return early</strong>
+                        <span>Only return to an affected area when authorized staff or authorities declare it safe.</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-panel kit-strip">
+                <div class="panel-title"><span>🎒</span><div><h3>Emergency Kit Checklist</h3><p>Make sure you can access the essentials quickly.</p></div></div>
+                <div class="kit-items"><span>☑ Water</span><span>☑ First Aid</span><span>☑ Flashlight</span><span>☑ Whistle</span><span>☑ Power Bank</span><span>☑ Important Contacts</span></div>
+                <button class="btn-outline" onclick="openEmergencyKit()">Open Full Checklist</button>
+            </section>
+
+            <section class="dashboard-panel drills-panel">
+                <div class="panel-title"><span>📅</span><div><h3>Upcoming Safety Drills</h3><p>Practice turns knowledge into confident action.</p></div><button class="btn-outline" onclick="loadStudentDrills()">Refresh</button></div>
+                <div id="student-drills" class="drill-list"><span class="empty-insight">Loading drills...</span></div>
+            </section>
+        </div>
+    </div>
+
+    <!-- LIGHTWEIGHT EMERGENCY KIT -->
+    <div class="view-screen" id="screen-emergency-kit">
+        <div class="feature-page">
+            <div class="feature-page-header"><div><span class="section-kicker">PREPAREDNESS TOOL</span><h2>🎒 Emergency Kit Checklist</h2><p>Check the essentials you should have available for an emergency.</p></div><button class="btn-outline" onclick="goDashboard()">Back to Dashboard</button></div>
+            <div class="kit-check-grid" id="kit-check-grid"></div>
+            <div class="kit-summary"><span>Kit readiness</span><strong id="kit-score">0%</strong></div>
+        </div>
+    </div>
+
+    <!-- STUDENT RANKINGS PLACEHOLDER -->
+    <div class="view-screen" id="screen-student-rankings">
+        <div class="feature-page">
+            <div class="feature-page-header"><div><span class="section-kicker">GAMIFIED LEARNING</span><h2>🏆 Preparedness Rankings</h2><p>Earn points by completing learning modules and quizzes.</p></div><button class="btn-outline" onclick="goDashboard()">Back to Dashboard</button></div>
+            <div class="ranking-hero"><span>YOUR CURRENT POINTS</span><strong id="student-points">0</strong><small id="student-ranking-message">Complete more modules to climb the leaderboard.</small></div>
+            <div id="student-full-ranking" class="full-ranking-list"><p class="staff-muted">Loading leaderboard...</p></div>
+        </div>
+    </div>
+
+    <!-- IMMERSIVE 3D EXPLORE MODE -->
+    <div class="view-screen explore-screen" id="screen-explore">
+        <div class="explore-ui">
+            <div class="explore-topbar">
+                <div>
+                    <div class="explore-title">🌍 Disaster World</div>
+                    <div class="explore-subtitle">Explore • Discover • Prepare</div>
+                </div>
+                <button class="btn-outline" onclick="exitExploreWorld()"><i class="fa-solid fa-arrow-left"></i> Exit World</button>
+            </div>
+            <div class="explore-help">
+                <b>W A S D</b> Move &nbsp; • &nbsp; <b>Mouse</b> Look &nbsp; • &nbsp; <b>ESC</b> Release cursor
+            </div>
+            <div class="explore-crosshair">+</div>
+            <div class="explore-objective" id="explore-objective">
+                <span>MISSION</span>
+                Find the <b>Earthquake Learning Building</b>.
+            </div>
+        </div>
+
+        <div class="explore-location-card" id="explore-location-card">
+            <div class="location-icon">⚠️</div>
+            <h2 id="explore-location-title">Earthquake Learning Zone</h2>
+            <p id="explore-location-text">You found an emergency learning location. Enter the challenge to test your response.</p>
+            <div class="explore-actions">
+                <button class="btn-submit" onclick="startExploreChallenge()">Start Challenge</button>
+                <button class="btn-outline" onclick="closeExplorePrompt()">Keep Exploring</button>
+            </div>
+        </div>
+
+        <canvas id="explore-canvas"></canvas>
+    </div>
+
+    <!-- STAFF ANALYTICS HUB -->
+    <div class="view-screen" id="screen-staff-dashboard">
+        <div class="staff-shell">
+            <div class="staff-header">
+                <div>
+                    <span class="section-kicker">EDUSHIELD STAFF PORTAL</span>
+                    <h2><i class="fa-solid fa-user-shield"></i> Campus Safety Command Center</h2>
+                    <p>Monitor enrollment, preparedness, rankings and disaster-wise performance in real time.</p>
+                </div>
+                <div class="staff-header-actions">
+                    <button class="btn-outline" onclick="openStaffDashboard()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                    <button class="btn-outline" onclick="goDashboard()"><i class="fa-solid fa-arrow-left"></i> Student View</button>
+                </div>
+            </div>
+
+            <div class="staff-metric-grid">
+                <div class="staff-metric"><span>👥</span><div><small>Total Students</small><strong id="stat-total-students">0</strong></div></div>
+                <div class="staff-metric"><span>🟢</span><div><small>Active Students</small><strong id="stat-active-students">0</strong></div></div>
+                <div class="staff-metric"><span>📝</span><div><small>Quizzes Completed</small><strong id="stat-total-completed">0</strong></div></div>
+                <div class="staff-metric"><span>📊</span><div><small>Average Score</small><strong id="stat-avg-score">0%</strong></div></div>
+                <div class="staff-metric"><span>🏅</span><div><small>High Performers</small><strong id="stat-high-performers">0</strong></div></div>
+                <div class="staff-metric"><span>⚠️</span><div><small>Needs Training</small><strong id="stat-needs-training">0</strong></div></div>
+                <div class="staff-metric staff-readiness"><span>🛡️</span><div><small>Campus Readiness</small><strong id="stat-readiness-level">CALCULATING</strong></div></div>
+            </div>
+
+            <div class="staff-analytics-grid">
+                <section class="staff-panel ranking-panel">
+                    <div class="staff-panel-heading"><div><span>🏆</span><h3>Top Student Rankings</h3><small>Based on preparedness points</small></div><b>TOP 10</b></div>
+                    <div id="staff-rankings" class="ranking-list"><p class="staff-muted">Loading rankings...</p></div>
+                </section>
+                <section class="staff-panel">
+                    <div class="staff-panel-heading"><div><span>📊</span><h3>Disaster Performance</h3><small>Average score by disaster</small></div></div>
+                    <div id="staff-disaster-breakdown" class="disaster-bars"><p class="staff-muted">Loading performance...</p></div>
+                </section>
+            </div>
+
+            <section class="staff-panel staff-roster-panel">
+                <div class="staff-roster-heading">
+                    <div><span class="section-kicker">STUDENT MANAGEMENT</span><h3>Student Performance Roster</h3><small>Search, inspect performance or reset quiz results.</small></div>
+                    <div class="staff-filters">
+                        <input type="text" id="staff-search-input" oninput="filterStudentRoster()" placeholder="Search name or email...">
+                        <select id="staff-status-filter" onchange="filterStudentRoster()"><option value="all">All Status</option><option value="Excellent">Excellent</option><option value="Pass">Pass</option><option value="Needs Training">Needs Training</option><option value="Unrated">Unrated</option></select>
+                    </div>
+                </div>
+                <div class="staff-table-wrap">
+                    <table class="staff-table">
+                        <thead><tr><th>Rank</th><th>Student</th><th>Quizzes</th><th>Disasters</th><th>Average</th><th>Status</th><th>Points</th><th>Actions</th></tr></thead>
+                        <tbody id="staff-student-table"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- STAFF STUDENT DETAILS MODAL -->
+    <div class="staff-modal" id="staff-student-modal" aria-hidden="true">
+        <div class="staff-modal-card">
+            <button class="staff-modal-close" onclick="closeStudentDetails()" aria-label="Close">&times;</button>
+            <div id="staff-student-details"><p class="staff-muted">Loading student details...</p></div>
+        </div>
+    </div>
+
+    <!-- 4-STAGE EXPERIENCE JOURNEY SCREEN -->
+    <div class="view-screen" id="screen-journey">
+        <div class="journey-container">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 id="journey-title" style="font-size: 2.2rem;">Disaster Title</h1>
+                <p id="journey-subtitle" style="color: var(--text-sub); margin-top: 0.3rem;">3D Interactive Education Pipeline</p>
+            </div>
+
+            <!-- Stage Navigation Tabs -->
+            <div class="stage-tabs">
+                <div class="stage-tab active" id="tab-01" onclick="switchStage('01')"><span>01</span>LEARN</div>
+                <div class="stage-tab" id="tab-02" onclick="switchStage('02')"><span>02</span>PREPARE</div>
+                <div class="stage-tab" id="tab-03" onclick="switchStage('03')"><span>03</span>RESPOND</div>
+                <div class="stage-tab" id="tab-04" onclick="switchStage('04')"><span>04</span>EVALUATE</div>
+            </div>
+
+            <!-- STAGE 01: LEARN -->
+            <div class="stage-content active" id="stage-01">
+                <h2 style="color: var(--accent-blue); margin-bottom: 1rem;">01 — What is this disaster?</h2>
+                <p id="learn-desc" style="line-height: 1.7; color: var(--text-sub); margin-bottom: 1.5rem;"></p>
+                <div style="background: rgba(255,255,255,0.04); padding: 1.5rem; border-radius: 16px; border: 1px solid var(--glass-border);">
+                    <h3 style="margin-bottom: 0.8rem; color: var(--accent-orange);"><i class="fa-solid fa-triangle-exclamation"></i> Warning Signs & Hazards</h3>
+                    <ul id="learn-hazards" style="list-style-position: inside; color: var(--text-sub); display: flex; flex-direction: column; gap: 0.5rem;"></ul>
+                </div>
+                <button class="btn-submit" onclick="switchStage('02')" style="margin-top: 2rem;">Proceed to Prepare Stage →</button>
+            </div>
+
+            <!-- STAGE 02: PREPARE -->
+            <div class="stage-content" id="stage-02">
+                <h2 style="color: var(--accent-green); margin-bottom: 1rem;">02 — How to prepare BEFORE it strikes</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                    <div style="background: rgba(34, 197, 94, 0.08); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(34, 197, 94, 0.3);">
+                        <h3 style="color: var(--accent-green); margin-bottom: 1rem;"><i class="fa-solid fa-kit-medical"></i> Action Checklist</h3>
+                        <ul id="prep-checklist" style="list-style: none; display: flex; flex-direction: column; gap: 0.8rem;"></ul>
+                    </div>
+                    <div style="background: rgba(239, 68, 68, 0.08); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(239, 68, 68, 0.3);">
+                        <h3 style="color: var(--accent-red); margin-bottom: 1rem;"><i class="fa-solid fa-ban"></i> Key Avoidances</h3>
+                        <ul id="prep-avoid" style="list-style: none; display: flex; flex-direction: column; gap: 0.8rem;"></ul>
+                    </div>
+                </div>
+                <button class="btn-submit" onclick="switchStage('03')">Launch 3D Response Simulation →</button>
+            </div>
+
+            <!-- STAGE 03: RESPOND -->
+            <div class="stage-content" id="stage-03">
+                <h2 style="color: var(--accent-red); margin-bottom: 0.5rem;">03 — Live 3D Simulation Scenario</h2>
+                <p style="color: var(--text-sub); margin-bottom: 1.5rem;">Make critical real-time decisions while the 3D environment reacts in the background.</p>
+
+                <div style="background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 20px; border: 1px solid var(--glass-border); text-align: center;">
+                    <p id="sim-question" style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem;"></p>
+                    <div id="sim-options" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                </div>
+            </div>
+
+            <!-- STAGE 04: EVALUATE -->
+            <div class="stage-content" id="stage-04">
+                <h2 style="color: var(--accent-purple); margin-bottom: 1.5rem; text-align: center;">04 — Performance Assessment</h2>
+                
+                <div class="report-box">
+                    <h3 style="letter-spacing: 2px; color: var(--accent-blue); margin-bottom: 1rem;">━━━━━━━━━━━━━━━━━━━━<br>DISASTER REPORT<br>━━━━━━━━━━━━━━━━━━━━</h3>
+                    
+                    <div class="metric-row"><span>Decision Accuracy</span><span id="eval-acc" style="color: var(--accent-green);">94%</span></div>
+                    <div class="metric-row"><span>Response Speed</span><span style="color: var(--accent-blue);">88%</span></div>
+                    <div class="metric-row"><span>Safety Protocol Adherence</span><span style="color: var(--accent-green);">96%</span></div>
+                    <div class="metric-row"><span>Evacuation Success</span><span style="color: var(--accent-green);">92%</span></div>
+
+                    <div style="margin: 1.5rem 0;">
+                        <span style="font-size: 0.9rem; color: var(--text-sub);">FINAL GRADE</span>
+                        <div id="eval-grade" style="font-size: 3rem; font-weight: 800; color: var(--accent-green);">92.5 / 100</div>
+                        <div id="eval-status" style="color: var(--accent-green); font-weight: 700; margin-top: 0.3rem;"><i class="fa-solid fa-shield-halved"></i> WELL PREPARED</div>
+                    </div>
+                    <button class="btn-submit" onclick="finishJourney()">Complete Module & Save Score</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; text-align: center;">
+                <button class="btn-outline" onclick="goDashboard()"><i class="fa-solid fa-arrow-left"></i> Exit to Disaster World</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SAFETY SURVEY FORM -->
+    <div class="view-screen" id="screen-survey">
+        <div class="survey-container">
+            <h2 style="font-size: 2rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-clipboard-check" style="color: var(--accent-blue);"></i> Campus Safety Audit Survey</h2>
+            <p style="color: var(--text-sub); margin-bottom: 2rem;">Assess your institution's physical infrastructure and readiness.</p>
+
+            <form onsubmit="submitSurvey(event)">
+                <div style="margin-bottom: 1.5rem;">
+                    <p style="font-weight: 600; margin-bottom: 0.5rem;">1. Fire Extinguishers & Fire Hoses Status</p>
+                    <select id="sq1" required>
+                        <option value="25">Inspected, tagged, and clear of obstructions</option>
+                        <option value="12">Present but expired or partially blocked</option>
+                        <option value="0">Missing or unserviceable</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <p style="font-weight: 600; margin-bottom: 0.5rem;">2. Emergency Exit Signage & Lighting</p>
+                    <select id="sq2" required>
+                        <option value="25">Fully illuminated with battery backup</option>
+                        <option value="12">Signs visible but no emergency lighting</option>
+                        <option value="0">No illuminated exit signs</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <p style="font-weight: 600; margin-bottom: 0.5rem;">3. Frequency of Campus Evacuation Drills</p>
+                    <select id="sq3" required>
+                        <option value="25">Conducted every semester</option>
+                        <option value="12">Conducted once a year</option>
+                        <option value="0">Never conducted</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <p style="font-weight: 600; margin-bottom: 0.5rem;">4. Exit Doors & Stairwell Obstructions</p>
+                    <select id="sq4" required>
+                        <option value="25">Always unlocked from inside, completely clear</option>
+                        <option value="0">Sometimes locked or cluttered with storage</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn-outline" onclick="goDashboard()">Cancel</button>
+                    <button type="submit" class="btn-submit" style="margin:0;">Submit Audit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- HELPLINES SCREEN -->
+    <div class="view-screen" id="screen-helplines">
+        <div class="helpline-container">
+            <h2><i class="fa-solid fa-phone-volume" style="color: var(--accent-red);"></i> Emergency Contacts</h2>
+            <div class="helpline-grid">
+                <div class="helpline-card"><div><div style="font-size:0.85rem; color:var(--text-sub);">Ambulance Services</div><div class="helpline-num">102 / 108</div></div></div>
+                <div class="helpline-card"><div><div style="font-size:0.85rem; color:var(--text-sub);">Fire Brigade</div><div class="helpline-num">101</div></div></div>
+                <div class="helpline-card"><div><div style="font-size:0.85rem; color:var(--text-sub);">Police Hotline</div><div class="helpline-num">100 / 112</div></div></div>
+                <div class="helpline-card"><div><div style="font-size:0.85rem; color:var(--text-sub);">Disaster Rescue (NDRF)</div><div class="helpline-num">1078</div></div></div>
+            </div>
+            <div style="margin-top: 2.5rem; text-align: center;"><button class="btn-outline" onclick="goDashboard()">Return to Dashboard</button></div>
+        </div>
+    </div>
+
+    <!-- JavaScript Scripts -->
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    <script src="assets/js/three-scene.js"></script>
+    <script src="assets/js/explore-world.js"></script>
+    <script src="assets/js/brush-reveal.js"></script>
+    <script src="assets/js/auth-brush-reveal.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+from database.connection import db
+
+quizzes = [
+    {'title': 'Earthquake Safety', 'disaster': 'Earthquake', 'description': 'Test your knowledge about earthquake safety.', 'difficulty': 'Easy', 'questions': [{'question': 'What should you do during an earthquake?', 'options': ['Run to the elevator', 'Drop, Cover and Hold', 'Stand near a window', 'Run onto the road'], 'correct_answer': 1}, {'question': 'Which place is generally safer during an earthquake?', 'options': ['Under a sturdy table', 'Near glass windows', 'Inside an elevator', 'On a balcony'], 'correct_answer': 0}, {'question': 'What should you avoid during an earthquake?', 'options': ['Protecting your head', 'Staying away from windows', 'Using an elevator', 'Taking cover'], 'correct_answer': 2}]},
+    {'title': 'Fire Safety', 'disaster': 'Fire', 'description': 'Test your knowledge about fire safety.', 'difficulty': 'Easy', 'questions': [{'question': 'What should you do when you discover a fire?', 'options': ['Raise the alarm', 'Hide in a room', 'Use the elevator', 'Ignore it'], 'correct_answer': 0}, {'question': 'Which route should you use during an evacuation?', 'options': ['Emergency exit', 'Elevator', 'Locked door', 'Window'], 'correct_answer': 0}, {'question': 'What should you do if smoke is present?', 'options': ['Stay low and move toward an exit', 'Stand upright', 'Open every window', 'Use the elevator'], 'correct_answer': 0}]},
+    {'title': 'Flash Flood Safety', 'disaster': 'Flood', 'description': 'Test your knowledge about flood safety.', 'difficulty': 'Medium', 'questions': [{'question': 'What should you do if flood water is rising?', 'options': ['Move to higher ground', 'Walk through fast water', 'Drive through flooded roads', 'Stay in a basement'], 'correct_answer': 0}, {'question': 'What should you avoid during a flood?', 'options': ['Higher ground', 'Emergency instructions', 'Flooded electrical areas', 'Safe shelters'], 'correct_answer': 2}, {'question': 'What should you do if a road is covered by moving floodwater?', 'options': ['Turn around and use a safe route', 'Drive faster', 'Walk across it', 'Wait in the water'], 'correct_answer': 0}]},
+    {'title': 'Chemical and Gas Leak Safety', 'disaster': 'Chemical', 'description': 'Test your knowledge about chemical safety.', 'difficulty': 'Medium', 'questions': [{'question': 'What should you avoid when you suspect a gas leak?', 'options': ['Flipping switches or striking matches', 'Moving away', 'Notifying emergency services', 'Following evacuation instructions'], 'correct_answer': 0}, {'question': 'What should you do if a chemical or gas leak is suspected?', 'options': ['Move to a safe area away from the leak', 'Stay near the source', 'Use an open flame', 'Turn electrical switches on and off'], 'correct_answer': 0}, {'question': 'Who should be notified about a serious leak?', 'options': ['Campus emergency services', 'Only friends', 'Nobody', 'Wait until tomorrow'], 'correct_answer': 0}]},
+    {'title': 'Cyclone and Windstorm Safety', 'disaster': 'Cyclone', 'description': 'Test your knowledge about cyclone safety.', 'difficulty': 'Medium', 'questions': [{'question': 'What should you use when power goes out during a storm?', 'options': ['Battery-powered flashlight or LED lantern', 'Open flame', 'Gas stove for light', 'Candle near a window'], 'correct_answer': 0}, {'question': 'What is the safest place during a severe windstorm?', 'options': ['Inside a sturdy building away from windows', 'Outside', 'Near large trees', 'On a balcony'], 'correct_answer': 0}, {'question': 'What should you do when authorities issue an evacuation order?', 'options': ['Follow the evacuation instructions', 'Ignore it', 'Wait for stronger winds', 'Go outside to observe'], 'correct_answer': 0}]},
+    {'title': 'Landslide Safety', 'disaster': 'Landslide', 'description': 'Test your knowledge about landslide safety.', 'difficulty': 'Medium', 'questions': [{'question': 'What should you do when a landslide is imminent?', 'options': ['Move away from the unstable slope to a safer area', 'Approach the slide', 'Cross the debris', 'Stand below the slope'], 'correct_answer': 0}, {'question': 'What can indicate slope instability?', 'options': ['New cracks or unusual ground movement', 'Clear weather only', 'Fresh paint', 'Quiet roads'], 'correct_answer': 0}, {'question': 'When may you return to a landslide area?', 'options': ['After authorities declare it safe', 'Immediately', 'After taking photos', 'When traffic resumes'], 'correct_answer': 0}]},
+    {'title': 'Biological Hazard Safety', 'disaster': 'Biological', 'description': 'Test your knowledge about biological safety.', 'difficulty': 'Medium', 'questions': [{'question': 'What is an important action during a biological emergency?', 'options': ['Follow official health guidance', 'Ignore warnings', 'Enter restricted areas', 'Share protective equipment'], 'correct_answer': 0}, {'question': 'What helps reduce infectious spread?', 'options': ['Good hand hygiene', 'Ignoring symptoms', 'Sharing personal items', 'Avoiding official guidance'], 'correct_answer': 0}, {'question': 'Who should handle restricted biological response areas?', 'options': ['Trained and authorized responders', 'Anyone nearby', 'Visitors', 'Untrained students'], 'correct_answer': 0}]},
+    {'title': 'Radiological Safety', 'disaster': 'Radiological', 'description': 'Test your knowledge about radiological safety.', 'difficulty': 'Hard', 'questions': [{'question': 'What should you do if you suspect a radioactive source?', 'options': ['Move away and notify trained responders', 'Touch it', 'Take it outside yourself', 'Crowd around it'], 'correct_answer': 0}, {'question': 'Which principle helps reduce radiation exposure?', 'options': ['Time, distance and shielding', 'Speed, heat and noise', 'Light, sound and water', 'Crowding and proximity'], 'correct_answer': 0}, {'question': 'Who should handle suspected radioactive material?', 'options': ['Trained responders', 'Students', 'Visitors', 'Untrained staff'], 'correct_answer': 0}]},
+]
+
+desired = {q["disaster"]: q for q in quizzes}
+for disaster, quiz in desired.items():
+    existing = db.quizzes.find_one({"disaster": disaster})
+    if existing:
+        db.quizzes.update_one({"_id": existing["_id"]}, {"$set": quiz})
+        print(f"Updated: {disaster}")
+    else:
+        db.quizzes.insert_one(quiz)
+        print(f"Added: {disaster}")
+
+# Remove duplicate quiz records, keeping the newest/first record per disaster.
+seen = set()
+for doc in db.quizzes.find({}, {"_id": 1, "disaster": 1}).sort("_id", 1):
+    disaster = doc.get("disaster")
+    if disaster in desired:
+        if disaster in seen:
+            db.quizzes.delete_one({"_id": doc["_id"]})
+            print(f"Removed duplicate: {disaster}")
+        else:
+            seen.add(disaster)
+
+print("\nEduShield quiz seed completed. Unique disaster quizzes:", db.quizzes.count_documents({"disaster": {"$in": list(desired.keys())}}))

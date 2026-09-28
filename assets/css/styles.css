@@ -1,0 +1,1947 @@
+:root {
+    --card-bg: rgba(15, 23, 42, 0.1);
+    --accent-blue: #d0da17;
+    --accent-green: #22c55e;
+    --accent-red: #ef4444;
+    --accent-orange: #f97316;
+    --accent-purple: #a855f7;
+    --text-main: #f8fafc;
+    --text-sub: #94a3b8;
+    --glass-border: rgba(255, 255, 255, 0.12);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: all 0.3s ease;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+
+#dynamic-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.journey-container {
+    position: relative;
+    z-index: 10;
+}
+
+/* Navigation */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 6%;
+    background: rgba(3, 97, 109, 0.75);
+    backdrop-filter: blur(16px);
+    z-index: 100;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+.logo i { color: var(--accent-blue); }
+
+.user-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-link-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-sub);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+}
+
+.nav-link-btn:hover { color: var(--accent-blue); background: rgba(255, 255, 255, 0.05); }
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-outline:hover {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+/* Views */
+.view-screen {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: none;
+    padding: 7rem 6% 4rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.view-screen.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Auth Screen */
+.auth-card {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    padding: 3rem;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+.auth-header { text-align: center; margin-bottom: 2rem; }
+.auth-header h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+.auth-header p { color: var(--text-sub); font-size: 0.95rem; }
+
+.form-group { margin-bottom: 1.2rem; }
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--text-sub);
+    font-weight: 600;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    outline: none;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 0.9rem;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent-blue);
+    color: #000;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.btn-submit:hover { opacity: 0.9; }
+
+.auth-toggle { text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-sub); }
+.auth-toggle span { color: var(--accent-blue); cursor: pointer; font-weight: 700; }
+.auth-error { color: var(--accent-red); font-size: 0.85rem; text-align: center; margin-top: 1rem; display: none; }
+
+/* Dashboard Portals */
+.portal-header { text-align: center; margin-bottom: 3rem; max-width: 800px; }
+
+.score-banner {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(34, 197, 94, 0.15));
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 1.5rem 2rem;
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    backdrop-filter: blur(12px);
+}
+
+.score-number { font-size: 2.8rem; font-weight: 800; color: var(--accent-green); }
+
+.category-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 2rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 1200px;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 0.5rem;
+}
+
+.disaster-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.portal-card {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(40px);
+    border-radius: 20px;
+    padding: 2rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.portal-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: var(--accent-blue);
+    box-shadow: 0 20px 40px rgba(56, 189, 248, 0.2);
+}
+
+.portal-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--glass-border);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+}
+
+/* 4-Stage Experience Journey */
+.journey-container {
+    max-width: 900px;
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    border-radius: 24px;
+    padding: 3rem;
+}
+
+.stage-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+}
+
+.stage-tab {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    padding: 0.8rem 0.5rem;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text-sub);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.stage-tab.active {
+    background: var(--accent-blue);
+    color: #000;
+    border-color: var(--accent-blue);
+}
+
+.stage-content { display: none; }
+.stage-content.active { display: block; }
+
+.sim-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+}
+
+.sim-btn:hover {
+    border-color: var(--accent-blue);
+    background: rgba(56, 189, 248, 0.1);
+}
+
+/* Evaluation & Helplines */
+.report-box {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--glass-border);
+    font-weight: 600;
+}
+
+.survey-container, .helpline-container {
+    max-width: 850px;
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    border-radius: 24px;
+    padding: 3rem;
+}
+
+.helpline-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.helpline-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.helpline-num { font-size: 1.2rem; font-weight: 800; color: var(--accent-green); margin-top: 0.2rem; }
+
+/* --- STAFF DASHBOARD OPAQUE STYLES (Decreased Transparency) --- */
+#screen-staff-dashboard .stat-card,
+#screen-staff-dashboard .staff-panel,
+#screen-staff-dashboard .portal-card,
+#screen-staff-dashboard .glass-card,
+#screen-staff-dashboard .table-container {
+    background: rgba(10, 16, 31, 0.05) !important;
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+}
+
+#screen-staff-dashboard table {
+    background: rgba(255, 255, 255, 0.02) !important;
+}
+
+#screen-staff-dashboard th {
+    background: rgba(255, 225, 255, 0.08) !important;
+    color: var(--accent-blue);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Hover effect on glass cards */
+#screen-staff-dashboard .stat-card:hover,
+#screen-staff-dashboard .staff-panel:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(56, 189, 248, 0.4) !important;
+    box-shadow: 0 12px 40px 0 rgba(56, 189, 248, 0.15);
+}
+
+/* =========================
+   IMMERSIVE 3D EXPLORE MODE
+========================= */
+.explore-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    padding: 0 !important;
+    overflow: hidden;
+    background: #82c9ee;
+}
+
+.explore-screen.active { display: block; }
+
+#explore-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: block;
+}
+
+.explore-ui {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.explore-topbar {
+    position: absolute;
+    top: 1.2rem;
+    left: 1.2rem;
+    right: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: auto;
+    padding: .8rem 1rem;
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 16px;
+    background: rgba(5, 20, 35, .62);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0,0,0,.18);
+}
+
+.explore-title { font-size: 1.2rem; font-weight: 800; color: #fff; }
+.explore-subtitle { color: rgba(255,255,255,.75); font-size: .78rem; margin-top: .15rem; }
+
+.explore-help {
+    position: absolute;
+    top: 5.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: .55rem .9rem;
+    border-radius: 999px;
+    background: rgba(5, 20, 35, .55);
+    color: #fff;
+    font-size: .78rem;
+    backdrop-filter: blur(10px);
+}
+
+.explore-crosshair {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255,255,255,.9);
+    font-size: 1.3rem;
+    text-shadow: 0 1px 4px #000;
+}
+
+.explore-objective {
+    position: absolute;
+    left: 1.2rem;
+    bottom: 1.2rem;
+    max-width: 360px;
+    padding: .9rem 1rem;
+    color: #fff;
+    background: rgba(5, 20, 35, .62);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 14px;
+    backdrop-filter: blur(10px);
+    font-size: .86rem;
+}
+
+.explore-objective span {
+    display: block;
+    color: #7dd3fc;
+    font-size: .65rem;
+    letter-spacing: .14em;
+    font-weight: 800;
+    margin-bottom: .2rem;
+}
+
+.explore-location-card {
+    position: absolute;
+    z-index: 7;
+    left: 50%;
+    bottom: 2.2rem;
+    transform: translate(-50%, 20px);
+    width: min(440px, calc(100% - 2rem));
+    padding: 1.4rem;
+    border-radius: 20px;
+    background: rgba(8, 18, 31, .93);
+    border: 1px solid rgba(255,255,255,.18);
+    box-shadow: 0 25px 70px rgba(0,0,0,.4);
+    color: #fff;
+    opacity: 0;
+    visibility: hidden;
+    transition: .25s ease;
+    text-align: center;
+}
+
+.explore-location-card.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+}
+
+.location-icon { font-size: 2rem; margin-bottom: .4rem; }
+.explore-location-card h2 { margin-bottom: .45rem; }
+.explore-location-card p { color: rgba(255,255,255,.72); line-height: 1.5; font-size: .9rem; }
+.explore-actions { display:flex; gap:.7rem; justify-content:center; margin-top:1rem; }
+.explore-actions button { margin:0; }
+.explore-entry-btn { width:auto !important; padding: .9rem 1.5rem !important; }
+
+@media (max-width: 700px) {
+    .explore-help { top: 6.4rem; font-size: .68rem; white-space: nowrap; }
+    .explore-actions { flex-direction: column; }
+    .explore-objective { right: 1.2rem; max-width: none; }
+}
+
+
+/* =========================================================
+   PHASE 2 - STUDENT DASHBOARD / LIGHTWEIGHT VISUAL SYSTEM
+   ========================================================= */
+
+/* =========================================================
+   PHASE 7 — Lightweight Disaster Background System
+   Uses CSS/SVG-style effects and the project's small PNG assets.
+   No background videos; pointer-events remain disabled.
+   ========================================================= */
+.animated-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 15% 18%, rgba(56,189,248,.12), transparent 30%),
+        radial-gradient(circle at 85% 72%, rgba(168,85,247,.11), transparent 34%),
+        linear-gradient(135deg,#050914 0%,#07151b 52%,#090b18 100%);
+    isolation: isolate;.animated-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    isolation: isolate;
+
+    /* MAIN EDUSHIELD BACKGROUND */
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(3, 8, 18, 0.20),
+            rgba(3, 8, 18, 0.72)
+        ),
+        url("../images/main-boy.png");
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    /* Cinematic appearance */
+    filter: saturate(1.08) contrast(1.05);
+}
+}
+.animated-bg::before,
+.animated-bg::after {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    opacity: .34;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,.42) 0 1px, transparent 1.8px),
+        radial-gradient(circle, rgba(125,211,252,.28) 0 1px, transparent 1.7px);
+    background-size: 90px 90px, 140px 140px;
+    animation: starDrift 28s linear infinite;
+}
+.animated-bg::after { animation-duration: 40s; animation-direction: reverse; opacity: .18; }
+.bg-orb { position:absolute; border-radius:50%; filter:blur(2px); animation: orbFloat 14s ease-in-out infinite; }
+.orb-1 { width:360px;height:360px;left:-100px;top:8%;background:radial-gradient(circle,rgba(34,211,238,.18),transparent 68%); }
+.orb-2 { width:440px;height:440px;right:-140px;top:28%;background:radial-gradient(circle,rgba(168,85,247,.16),transparent 68%);animation-delay:-5s; }
+.orb-3 { width:300px;height:300px;left:42%;bottom:-140px;background:radial-gradient(circle,rgba(34,197,94,.13),transparent 68%);animation-delay:-9s; }
+.bg-particle { position:absolute;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.45);box-shadow:0 0 14px rgba(56,189,248,.7);animation:particleFloat 10s linear infinite; }
+.p1{left:12%;top:72%;animation-delay:-2s}.p2{left:34%;top:30%;animation-delay:-6s}.p3{left:68%;top:62%;animation-delay:-4s}.p4{left:88%;top:20%;animation-delay:-8s}
+.bg-scene { position:absolute; inset:0; z-index:-1; overflow:hidden; }
+.bg-building,.bg-tree,.bg-car { position:absolute; object-fit:contain; opacity:.075; filter:saturate(.75) brightness(.8); }
+.bg-building { width:min(28vw,420px); right:-4vw; bottom:-3vw; animation:sceneBreathe 7s ease-in-out infinite; }
+.bg-tree { width:min(18vw,260px); left:-2vw; bottom:-2vw; animation:treeSway 6s ease-in-out infinite; transform-origin:bottom center; }
+.bg-car { width:min(14vw,190px); right:25%; bottom:2%; opacity:.045; animation:carDrift 18s ease-in-out infinite; }
+.bg-wave { position:absolute; left:-10%; right:-10%; bottom:-16%; height:34%; border-radius:50% 50% 0 0; border-top:1px solid rgba(56,189,248,.16); background:linear-gradient(180deg,rgba(56,189,248,.08),transparent 70%); animation:waveMove 9s ease-in-out infinite; }
+.bg-ring { position:absolute; width:38vw;height:38vw;max-width:620px;max-height:620px;right:-12vw;top:20%;border:1px solid rgba(125,211,252,.09);border-radius:50%;animation:spin 30s linear infinite; }
+.bg-ring::before,.bg-ring::after{content:"";position:absolute;inset:12%;border:1px dashed rgba(125,211,252,.07);border-radius:50%;}
+.bg-ring::after{inset:28%;border-style:solid;animation:spin 18s linear reverse infinite;}
+
+/* =========================================================
+   PHASE 7.1 — VISIBLE MOVING DISASTER ANIMATIONS
+   Lightweight DOM particles; no video and no external assets.
+   ========================================================= */
+.disaster-fx{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none}
+.disaster-fx span{position:absolute;display:block;will-change:transform,opacity}
+
+/* Fire — rising embers */
+.fx-ember{width:5px;height:9px;border-radius:60% 40% 60% 40%;left:calc((var(--i) * 5.7%) + 2%);bottom:-25px;background:rgba(255,180,60,.9);box-shadow:0 0 12px rgba(255,90,20,.8);animation:emberRise calc(3.2s + (var(--i) % 5) * .45s) linear infinite;animation-delay:calc(var(--i) * -.37s)}
+@keyframes emberRise{0%{transform:translate3d(0,0,0) rotate(0) scale(.7);opacity:0}12%{opacity:.95}45%{transform:translate3d(25px,-35vh,0) rotate(90deg) scale(1)}75%{opacity:.7}100%{transform:translate3d(-35px,-105vh,0) rotate(220deg) scale(.25);opacity:0}}
+
+/* Flood — moving wave lines */
+.fx-wave-line{left:-15%;width:130%;height:70px;bottom:calc(3% + (var(--i) * 7%));border-top:3px solid rgba(56,189,248,.22);border-radius:50%;animation:floodWave calc(4s + (var(--i) * .25s)) ease-in-out infinite;animation-delay:calc(var(--i) * -.45s);opacity:.75}
+@keyframes floodWave{0%,100%{transform:translateX(-4%) scaleY(.75) rotate(-1deg)}50%{transform:translateX(5%) scaleY(1.25) rotate(1deg)}}
+
+/* Cyclone — curved wind streaks */
+.fx-wind{left:55%;top:42%;width:420px;height:150px;border:2px solid rgba(125,211,252,.20);border-left-color:transparent;border-right-color:transparent;border-radius:50%;transform-origin:30% 50%;animation:windSpin calc(7s + (var(--i) * .35s)) linear infinite;animation-delay:calc(var(--i) * -.7s)}
+.fx-wind:nth-child(even){width:300px;height:100px;left:62%;top:48%;opacity:.6}
+@keyframes windSpin{from{transform:rotate(0deg) translateX(0)}to{transform:rotate(360deg) translateX(8px)}}
+
+/* Landslide — falling rocks/dust */
+.fx-rock{width:7px;height:7px;border-radius:2px;left:calc((var(--i) * 6.1%) - 2%);top:-20px;background:rgba(180,130,80,.65);box-shadow:0 0 7px rgba(180,130,80,.25);animation:rockFall calc(3s + (var(--i) % 4) * .5s) linear infinite;animation-delay:calc(var(--i) * -.3s)}
+@keyframes rockFall{0%{transform:translate(0,0) rotate(0);opacity:0}10%{opacity:.8}60%{transform:translate(45px,62vh) rotate(180deg)}100%{transform:translate(110px,112vh) rotate(360deg);opacity:0}}
+
+/* Biological — floating cells */
+.fx-cell{width:12px;height:12px;border:1px solid rgba(74,222,128,.35);border-radius:50%;left:calc((var(--i) * 5.3%) + 1%);top:calc((var(--i) * 4.7%) + 3%);box-shadow:0 0 18px rgba(34,197,94,.22);animation:cellFloat calc(5s + (var(--i) % 5) * .7s) ease-in-out infinite;animation-delay:calc(var(--i) * -.45s)}
+.fx-cell::after{content:"";position:absolute;width:4px;height:4px;left:3px;top:3px;border-radius:50%;background:rgba(134,239,172,.55)}
+@keyframes cellFloat{0%,100%{transform:translate(0,0) scale(.7);opacity:.15}50%{transform:translate(35px,-65px) scale(1.25);opacity:.75}}
+
+/* Radiological — pulsing scanner rings */
+.fx-radar{width:180px;height:180px;left:calc(72% + (var(--i) * 2%));top:42%;border:2px solid rgba(250,204,21,.18);border-radius:50%;animation:radarPulse 3.2s ease-out infinite;animation-delay:calc(var(--i) * -.65s)}
+.fx-pulse{width:18px;height:18px;left:78%;top:50%;border-radius:50%;background:rgba(250,204,21,.5);box-shadow:0 0 35px rgba(250,204,21,.8);animation:radioPulse 2s ease-in-out infinite;animation-delay:calc(var(--i) * -.4s)}
+@keyframes radarPulse{0%{transform:scale(.2);opacity:.7}100%{transform:scale(3);opacity:0}}
+@keyframes radioPulse{0%,100%{transform:scale(.6);opacity:.3}50%{transform:scale(1.5);opacity:1}}
+
+/* Chemical — drifting gas clouds */
+.fx-gas{width:80px;height:55px;left:calc((var(--i) * 7%) - 5%);bottom:calc(-2% + (var(--i) % 4) * 5%);border-radius:50%;background:radial-gradient(circle,rgba(163,230,53,.16),transparent 68%);filter:blur(7px);animation:gasDrift calc(7s + (var(--i) % 5) * .8s) ease-in-out infinite;animation-delay:calc(var(--i) * -.55s)}
+@keyframes gasDrift{0%{transform:translate(0,15px) scale(.65);opacity:0}25%{opacity:.7}60%{transform:translate(90px,-100px) scale(1.35);opacity:.4}100%{transform:translate(170px,-220px) scale(1.8);opacity:0}}
+
+/* Earthquake — visible dust + crack flashes */
+.fx-dust{width:6px;height:6px;border-radius:50%;left:calc((var(--i) * 17%) + 3%);bottom:8%;background:rgba(214,170,110,.55);animation:dustShake 1.2s steps(2,end) infinite;animation-delay:calc(var(--i) * -.18s)}
+.fx-crack{left:15%;bottom:13%;width:120px;height:2px;background:rgba(245,158,11,.22);transform:rotate(calc((var(--i) - 1) * 13deg));animation:crackFlash 2.8s ease-in-out infinite;animation-delay:calc(var(--i) * -.8s)}
+@keyframes dustShake{0%,100%{transform:translate(0,0);opacity:.15}25%{transform:translate(-9px,-3px);opacity:.8}50%{transform:translate(8px,2px);opacity:.35}75%{transform:translate(-5px,1px);opacity:.65}}
+@keyframes crackFlash{0%,70%,100%{opacity:.05;transform:scaleX(.6) rotate(13deg)}75%{opacity:.75;transform:scaleX(1.2) rotate(13deg)}80%{opacity:.1}}
+
+body.bg-fire .animated-bg::before,body.bg-fire .animated-bg::after{opacity:.15}
+body.bg-flood .disaster-fx{bottom:-8%}
+body.bg-cyclone .disaster-fx{filter:blur(.2px)}
+
+@media (prefers-reduced-motion: reduce){.disaster-fx span{animation:none!important;opacity:.15!important}}
+
+/* Disaster-specific atmosphere */
+body.bg-earthquake .animated-bg { background:radial-gradient(circle at 50% 65%,rgba(245,158,11,.10),transparent 34%),linear-gradient(135deg,#090806,#15100a 55%,#090b12); }
+body.bg-earthquake .bg-scene { animation:earthquakeShake .75s steps(2,end) infinite; }
+body.bg-fire .animated-bg { background:radial-gradient(circle at 50% 90%,rgba(239,68,68,.18),transparent 38%),linear-gradient(135deg,#100706,#180c08 55%,#090b12); }
+body.bg-fire .bg-wave { bottom:-20%; border-color:rgba(249,115,22,.22); background:linear-gradient(180deg,rgba(249,115,22,.08),transparent 70%); animation:flameRise 5s ease-in-out infinite; }
+body.bg-flood .animated-bg { background:radial-gradient(circle at 50% 75%,rgba(14,165,233,.16),transparent 38%),linear-gradient(135deg,#041018,#071923 55%,#090b18); }
+body.bg-flood .bg-wave { animation:waveMove 4s ease-in-out infinite; height:42%; }
+body.bg-cyclone .animated-bg { background:radial-gradient(circle at 70% 45%,rgba(125,211,252,.14),transparent 38%),linear-gradient(135deg,#071018,#0b1722 55%,#090b18); }
+body.bg-cyclone .bg-ring { width:52vw;height:52vw;right:-17vw;top:8%;border-color:rgba(125,211,252,.15);animation-duration:14s; }
+body.bg-landslide .animated-bg { background:radial-gradient(circle at 15% 80%,rgba(217,119,6,.14),transparent 35%),linear-gradient(135deg,#0d0a07,#17110a 55%,#090b12); }
+body.bg-landslide .bg-building { transform:translateY(4px); }
+body.bg-biological .animated-bg { background:radial-gradient(circle at 30% 30%,rgba(34,197,94,.13),transparent 32%),linear-gradient(135deg,#06100a,#0a1710 55%,#090b18); }
+body.bg-biological .bg-orb { animation-duration:9s; }
+body.bg-radiological .animated-bg { background:radial-gradient(circle at 70% 40%,rgba(234,179,8,.13),transparent 28%),linear-gradient(135deg,#0d0d06,#17150a 55%,#090b18); }
+body.bg-radiological .bg-ring { border-color:rgba(250,204,21,.14);animation-duration:8s; }
+body.bg-chemical .animated-bg { background:radial-gradient(circle at 35% 65%,rgba(132,204,22,.12),transparent 30%),linear-gradient(135deg,#0a0e07,#11180a 55%,#090b18); }
+body.bg-chemical .bg-orb { filter:blur(10px); }
+
+@keyframes starDrift { from{transform:translate3d(0,0,0)} to{transform:translate3d(70px,45px,0)} }
+@keyframes orbFloat { 0%,100%{transform:translate3d(0,0,0) scale(1)} 50%{transform:translate3d(0,-28px,0) scale(1.05)} }
+@keyframes particleFloat { 0%{transform:translateY(30px);opacity:0} 20%{opacity:.7} 80%{opacity:.35} 100%{transform:translateY(-90px);opacity:0} }
+@keyframes sceneBreathe { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes treeSway { 0%,100%{transform:rotate(-1deg)} 50%{transform:rotate(1.5deg)} }
+@keyframes carDrift { 0%,100%{transform:translateX(-10px)} 50%{transform:translateX(80px)} }
+@keyframes waveMove { 0%,100%{transform:translateX(-2%) rotate(-1deg)} 50%{transform:translateX(3%) rotate(1deg)} }
+@keyframes flameRise { 0%,100%{transform:translateY(5px) scaleX(1)} 50%{transform:translateY(-18px) scaleX(1.04)} }
+@keyframes earthquakeShake { 0%,100%{transform:translate(0,0)} 25%{transform:translate(-2px,1px)} 50%{transform:translate(2px,-1px)} 75%{transform:translate(-1px,-2px)} }
+
+@media (prefers-reduced-motion: reduce) {
+    .animated-bg *, .animated-bg::before, .animated-bg::after,
+    body.bg-earthquake .bg-scene { animation:none !important; }
+}
+
+.student-dashboard{width:min(1240px,92vw);margin:0 auto;padding:7.2rem 0 4rem;position:relative;z-index:10}
+.student-hero{min-height:420px;display:grid;grid-template-columns:1.15fr .85fr;gap:2rem;align-items:center;padding:3.5rem;border:1px solid rgba(255,255,255,.10);border-radius:32px;background:linear-gradient(135deg,rgba(8,25,34,.92),rgba(13,19,39,.78));box-shadow:0 24px 80px rgba(0,0,0,.28);overflow:hidden;position:relative}
+.student-hero:after{content:"";position:absolute;inset:auto -10% -55% 35%;height:400px;background:radial-gradient(circle,rgba(56,189,248,.13),transparent 65%);pointer-events:none}
+.eyebrow,.section-kicker{font-size:.72rem;letter-spacing:2px;font-weight:800;color:var(--accent-blue)}
+.hero-copy h1{font-size:clamp(2.4rem,5vw,4.5rem);line-height:1.04;margin:1rem 0}.hero-copy h1 span{color:#ff00b3}.hero-copy p{max-width:650px;color:var(--text-sub);line-height:1.75;font-size:1.05rem}.hero-actions{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.7rem}
+.disaster-orbit{width:350px;height:350px;position:relative;margin:auto;display:grid;place-items:center}.orbit-ring{position:absolute;border:1px solid rgba(125,211,252,.24);border-radius:50%;animation:spin 18s linear infinite}.ring-a{width:290px;height:290px}.ring-b{width:205px;height:205px;animation-direction:reverse;animation-duration:12s}.orbit-core{width:118px;height:118px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(15,23,42,.85);border:1px solid rgba(125,211,252,.4);box-shadow:0 0 55px rgba(56,189,248,.16)}.orbit-core span{font-size:2.5rem}.orbit-core small{color:var(--accent-green);font-weight:800;letter-spacing:2px}.orbit-icon{position:absolute;width:52px;height:52px;border-radius:16px;background:rgba(15,23,42,.88);border:1px solid rgba(255,255,255,.12);display:grid;place-items:center;font-size:1.5rem;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:bob 3.5s ease-in-out infinite}.oi-1{top:24px;left:148px}.oi-2{top:90px;right:10px;animation-delay:-.7s}.oi-3{bottom:62px;right:38px;animation-delay:-1.2s}.oi-4{bottom:18px;left:145px;animation-delay:-1.8s}.oi-5{bottom:68px;left:30px;animation-delay:-2.3s}.oi-6{top:92px;left:12px;animation-delay:-2.9s}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+.student-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1.3rem 0}.student-stat-card{min-height:120px;padding:1.2rem 1.3rem;border-radius:20px;border:1px solid rgba(255,255,255,.09);background:rgba(73, 28, 23, 0.7);border-radius:18px;color:var(--text-main);cursor:pointer}.tool-card:hover{transform:translateY(-4px);border-color:rgba(56,189,248,.4);background:rgba(20,34,52,.85)}.tool-card span{font-size:1.8rem;;display:flex;gap:1rem;align-items:center}.student-stat-card .stat-icon{font-size:1.65rem;width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:rgba(161, 155, 155, 0.06)}.student-stat-card span,.student-stat-card small{display:block;color:var(--text-sub)}.student-stat-card span{font-size:.78rem}.student-stat-card strong{display:block;font-size:1.85rem;margin:.15rem 0}.student-stat-card small{font-size:.72rem}.featured-stat{border-color:rgba(34,197,94,.28);background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(15,23,42,.78))}
+.quick-tools,.disaster-section{margin-top:2.5rem}.quick-tools>div:first-child{margin-bottom:1rem}.quick-tools h2,.section-heading h2{font-size:1.65rem;margin-top:.25rem}.tool-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}.tool-card{text-align:left;padding:1.25rem;border:1px solid rgba(255,255,255,.09);background:rgba(72, 83, 20, 0.7);border-radius:18px;color:var(--text-main);cursor:pointer}.tool-card:hover{transform:translateY(-4px);border-color:rgba(56,189,248,.4);background:rgba(20,34,52,.85)}.tool-card span{font-size:1.8rem;display:block;margin-bottom:.8rem}.tool-card b{display:block}.tool-card small{color:var(--text-sub);display:block;margin-top:.35rem;line-height:1.4}
+.section-heading{display:flex;justify-content:space-between;align-items:end;gap:1rem;margin-bottom:1rem}.section-heading p{max-width:480px;color:var(--text-sub);font-size:.88rem;text-align:right}.natural-kicker{color:var(--accent-green)}.human-kicker{color:var(--accent-orange)}
+.disaster-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem}.portal-card{position:relative;min-height:280px;padding:0;border-radius:22px;border:1px solid rgba(255,255,255,.14);background:#0b1220;cursor:pointer;overflow:hidden;isolation:isolate;box-shadow:0 14px 35px rgba(0,0,0,.18)}.portal-card-bg{position:absolute;inset:0;z-index:-3;background-size:cover;background-position:center;transform:scale(1.03);transition:transform .7s cubic-bezier(.2,.7,.2,1),filter .7s ease;filter:brightness(.65) saturate(.9) contrast(1.05)}.portal-card-overlay{position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(3,7,18,.18) 0%,rgba(3,7,18,.28) 32%,rgba(3,7,18,.94) 100%),linear-gradient(90deg,rgba(0,0,0,.12),rgba(0,0,0,.35));pointer-events:none}.portal-card-content{position:relative;z-index:2;min-height:280px;padding:1.35rem;display:flex;flex-direction:column;justify-content:flex-end}.portal-card:hover{transform:translateY(-7px);border-color:rgba(125,211,252,.55);box-shadow:0 22px 55px rgba(0,0,0,.35)}.portal-card:hover .portal-card-bg{transform:scale(1.11);filter:brightness(.78) saturate(1.08) contrast(1.06)}.portal-badge{position:absolute;right:14px;top:14px;font-size:.75rem;font-weight:800;padding:.38rem .62rem;border-radius:999px;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15)}.card-icon{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:1.35rem;margin-bottom:.8rem;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14)}.portal-card h3{margin-bottom:.5rem;text-shadow:0 3px 14px rgba(0,0,0,.65)}.portal-card p{line-height:1.5;text-shadow:0 2px 10px rgba(0,0,0,.65)}.card-learn-more{display:inline-flex;margin-top:.9rem;font-size:.7rem;font-weight:800;letter-spacing:1.6px;color:rgba(255,255,255,.85)}.human-section{padding-top:.5rem}
+.bottom-dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}.dashboard-panel{padding:1.5rem;border-radius:22px;border:1px solid rgba(255,255,255,.09);background:rgba(44, 13, 50, 0.622)}.panel-title{display:flex;gap:.9rem;align-items:flex-start}.panel-title>span{font-size:1.6rem}.panel-title h3{font-size:1.1rem}.panel-title p{color:var(--text-sub);font-size:.78rem;margin-top:.2rem}.progress-line{margin-top:1.4rem}.progress-line>div:first-child{display:flex;justify-content:space-between;color:var(--text-sub);font-size:.8rem}.progress-line b{color:var(--accent-blue)}.progress-track{height:9px;border-radius:99px;background:rgba(222, 46, 46, 0.08);overflow:hidden;margin-top:.55rem}.progress-track i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple));border-radius:inherit;transition:width .6s ease}.mini-progress-list{display:grid;gap:.7rem;margin-top:1.2rem}.mini-progress-list div{display:flex;justify-content:space-between;color:var(--text-sub);font-size:.82rem}.mini-progress-list b{color:var(--text-main)}.safety-tip{margin-top:1.1rem;padding:1rem;border-radius:16px;background:rgba(107, 25, 52, 0.824);border:1px solid rgba(183, 195, 199, 0.14)}.safety-tip strong{display:block;margin-bottom:.35rem}.safety-tip p{color:var(--text-sub);line-height:1.55;font-size:.86rem}.kit-strip{margin-top:1rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}.kit-strip .panel-title{flex:1;min-width:250px}.kit-items{display:flex;gap:.55rem;flex-wrap:wrap;flex:2}.kit-items span{padding:.45rem .65rem;border-radius:10px;background:rgba(107, 25, 52, 0.824);color:var(--text-sub);font-size:.76rem}
+.feature-page{width:min(1050px,92vw);margin:0 auto;padding:8rem 0 4rem;position:relative;z-index:10}.feature-page-header{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;margin-bottom:2rem}.feature-page-header h2{font-size:2rem;margin:.4rem 0}.feature-page-header p{color:var(--text-sub)}.kit-check-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.kit-check-item{padding:1.2rem;border-radius:18px;background:rgba(15,23,42,.78);border:1px solid rgba(255,255,255,.09);display:flex;gap:.8rem;align-items:center}.kit-check-item input{width:19px;height:19px;accent-color:var(--accent-green)}.kit-check-item span{font-weight:600}.kit-summary{margin-top:1.2rem;padding:1.2rem 1.4rem;border-radius:18px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);display:flex;justify-content:space-between}.kit-summary strong{font-size:1.5rem;color:var(--accent-green)}.ranking-hero{padding:2rem;border-radius:24px;background:linear-gradient(135deg,rgba(168,85,247,.12),rgba(15,23,42,.8));border:1px solid rgba(168,85,247,.25);text-align:center}.ranking-hero span,.ranking-hero small{display:block;color:var(--text-sub)}.ranking-hero strong{display:block;font-size:4rem;margin:.4rem}.ranking-note{margin-top:1rem;color:var(--text-sub);text-align:center;padding:1rem}
+
+@media(max-width:900px){.student-hero{grid-template-columns:1fr;padding:2rem}.disaster-orbit{width:280px;height:280px}.student-stat-grid,.tool-grid{grid-template-columns:repeat(2,1fr)}.bottom-dashboard-grid{grid-template-columns:1fr}.kit-check-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.student-dashboard{width:94vw;padding-top:6rem}.student-hero{min-height:0;padding:1.5rem;border-radius:24px}.hero-copy h1{font-size:2.45rem}.hero-actions{flex-direction:column}.hero-actions button{width:100%}.disaster-orbit{transform:scale(.8);margin:-20px auto}.student-stat-grid,.tool-grid,.kit-check-grid{grid-template-columns:1fr}.section-heading{display:block}.section-heading p{text-align:left;margin-top:.5rem}.feature-page-header{display:block}.feature-page-header button{margin-top:1rem}.kit-strip{align-items:flex-start}.kit-items{width:100%}}
+
+
+/* =========================================================
+   PHASE 4 - STAFF COMMAND CENTER
+   ========================================================= */
+.staff-shell{width:min(1280px,94vw);margin:0 auto;padding:7.2rem 0 4rem;position:relative;z-index:10}
+.staff-header{display:flex;justify-content:space-between;gap:1.5rem;align-items:center;padding:1.7rem 1.8rem;margin-bottom:1.2rem;border:1px solid rgba(125,211,252,.14);border-radius:22px;background:linear-gradient(135deg,rgba(12,27,43,.94),rgba(15,23,42,.86));box-shadow:0 18px 55px rgba(0,0,0,.22)}
+.staff-header h2{font-size:1.65rem;margin:.3rem 0}.staff-header h2 i{color:var(--accent-blue);margin-right:.35rem}.staff-header p{color:var(--text-sub);font-size:.86rem}.staff-header-actions{display:flex;gap:.6rem;flex-wrap:wrap}.staff-header-actions button{margin:0}
+.staff-metric-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.75rem;margin-bottom:1.2rem}.staff-metric{min-height:108px;padding:1rem;border:1px solid var(--glass-border);border-radius:16px;background:rgba(15,23,42,.82);display:flex;gap:.7rem;align-items:center}.staff-metric>span{font-size:1.45rem}.staff-metric small{display:block;color:var(--text-sub);font-size:.67rem}.staff-metric strong{display:block;margin-top:.25rem;font-size:1.45rem;color:#7dd3fc}.staff-readiness strong{font-size:.78rem;color:var(--accent-orange)}
+.staff-analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.2rem}.staff-panel{border:1px solid var(--glass-border);border-radius:18px;background:rgba(15,23,42,.82);padding:1.25rem;box-shadow:0 14px 40px rgba(0,0,0,.16)}.staff-panel-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}.staff-panel-heading>div{display:flex;align-items:center;gap:.55rem}.staff-panel-heading span{font-size:1.25rem}.staff-panel-heading h3{margin:0;font-size:1rem}.staff-panel-heading small,.staff-roster-heading small{display:block;color:var(--text-sub);font-size:.68rem}.staff-panel-heading>b{font-size:.62rem;color:var(--accent-blue);letter-spacing:1px}
+.ranking-list{max-height:365px;overflow:auto}.ranking-item{display:grid;grid-template-columns:38px 1fr auto;gap:.55rem;align-items:center;padding:.72rem .35rem;border-bottom:1px solid rgba(255,255,255,.07)}.rank-badge{font-weight:800;color:#7dd3fc}.rank-name{font-weight:700;font-size:.82rem}.rank-meta{color:var(--text-sub);font-size:.65rem}.rank-score{text-align:right;font-weight:800;font-size:.78rem}.rank-points{display:block;color:var(--accent-blue);font-size:.62rem}
+.disaster-bars{max-height:365px;overflow:auto}.disaster-bar-row{margin-bottom:1rem}.disaster-bar-top{display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:.35rem}.disaster-bar-track{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.disaster-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#22d3ee,#60a5fa);transition:width .5s ease}.disaster-bar-meta{font-size:.62rem;color:var(--text-sub);margin-top:.25rem}
+.staff-roster-panel{padding:1.25rem}.staff-roster-heading{display:flex;justify-content:space-between;align-items:end;gap:1rem;margin-bottom:1rem}.staff-roster-heading h3{margin:.25rem 0}.staff-filters{display:flex;gap:.55rem}.staff-filters input,.staff-filters select{padding:.65rem .75rem;border-radius:10px;border:1px solid var(--glass-border);background:rgba(255,255,255,.06);color:#fff;outline:none}.staff-filters input{width:240px}.staff-filters select option{background:#0f172a}
+.staff-table-wrap{overflow:auto}.staff-table{width:100%;border-collapse:collapse;min-width:850px}.staff-table th{padding:.75rem .65rem;text-align:left;font-size:.63rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-sub);background:rgba(255,255,255,.025)}.staff-table td{padding:.78rem .65rem;border-top:1px solid rgba(255,255,255,.07);font-size:.75rem}.staff-table tr:hover{background:rgba(125,211,252,.035)}.student-cell b{display:block}.student-cell small{color:var(--text-sub)}.status-pill{display:inline-block;padding:.28rem .5rem;border-radius:999px;font-size:.62rem;font-weight:800}.status-excellent{color:#86efac;background:rgba(34,197,94,.12)}.status-pass{color:#67e8f9;background:rgba(34,211,238,.1)}.status-training{color:#fca5a5;background:rgba(239,68,68,.1)}.status-unrated{color:var(--text-sub);background:rgba(148,163,184,.1)}.staff-action{display:flex;gap:.35rem}.staff-action button{margin:0;padding:.35rem .55rem;font-size:.64rem}.staff-muted{color:var(--text-sub);font-size:.78rem}
+.staff-modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:1rem;background:rgba(0,0,0,.7);backdrop-filter:blur(7px)}.staff-modal.show{display:flex}.staff-modal-card{position:relative;width:min(720px,94vw);max-height:86vh;overflow:auto;border:1px solid rgba(125,211,252,.18);border-radius:22px;background:#0b1422;box-shadow:0 30px 100px rgba(0,0,0,.55);padding:1.5rem}.staff-modal-close{position:absolute;right:1rem;top:.8rem;border:0;background:none;color:#fff;font-size:1.8rem;cursor:pointer}.detail-header{padding-right:2rem;margin-bottom:1rem}.detail-header h2{margin:.2rem 0}.detail-header p{color:var(--text-sub);font-size:.78rem}.detail-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:1rem}.detail-stat{padding:.8rem;border:1px solid var(--glass-border);border-radius:12px;background:rgba(255,255,255,.035)}.detail-stat small{display:block;color:var(--text-sub);font-size:.62rem}.detail-stat b{font-size:1.1rem}.detail-results{display:grid;gap:.55rem}.detail-result{display:flex;justify-content:space-between;gap:1rem;padding:.7rem;border-radius:10px;background:rgba(255,255,255,.035)}.detail-result small{display:block;color:var(--text-sub);font-size:.62rem}.detail-result-score{font-weight:800;color:#7dd3fc}
+@media(max-width:1100px){.staff-metric-grid{grid-template-columns:repeat(4,1fr)}}@media(max-width:800px){.staff-header,.staff-roster-heading{align-items:flex-start;flex-direction:column}.staff-analytics-grid{grid-template-columns:1fr}.staff-metric-grid{grid-template-columns:repeat(2,1fr)}.staff-filters{width:100%;flex-direction:column}.staff-filters input{width:auto}.detail-stat-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* =========================================================
+   PHASE 5 - STUDENT INSIGHTS / GAMIFICATION
+   ========================================================= */
+.student-insight-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem}.student-insight-grid .dashboard-panel{min-height:235px}.achievement-list,.recent-result-list{display:grid;gap:.6rem;margin-top:1rem}.achievement-item,.recent-result-item{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding:.72rem;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06)}.achievement-item .badge-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:rgba(168,85,247,.12);font-size:1.15rem}.achievement-item>div:first-child{display:flex;align-items:center;gap:.65rem}.achievement-item b,.recent-result-item b{display:block;font-size:.78rem}.achievement-item small,.recent-result-item small{display:block;color:var(--text-sub);font-size:.63rem;line-height:1.35}.result-score{font-weight:800;color:#7dd3fc;font-size:.85rem}.empty-insight{color:var(--text-sub);font-size:.75rem;padding:1rem;border:1px dashed rgba(255,255,255,.1);border-radius:12px;text-align:center}.my-rank-card{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin-top:1rem}.my-rank-card>div{padding:.85rem;border-radius:13px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.12);text-align:center}.my-rank-card small{display:block;color:var(--text-sub);font-size:.6rem}.my-rank-card strong{display:block;font-size:1.35rem;margin-top:.2rem}.insight-action{margin-top:1rem;width:100%}.preparedness-map-panel{margin-top:1rem}.preparedness-map{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;margin-top:1rem}.preparedness-module{padding:.85rem;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}.preparedness-module-top{display:flex;justify-content:space-between;gap:.4rem;font-size:.72rem}.preparedness-module small{display:block;color:var(--text-sub);font-size:.6rem;margin-top:.25rem}.module-track{height:6px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin-top:.55rem}.module-track i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--accent-blue),var(--accent-green))}.full-ranking-list{margin-top:1.2rem;display:grid;gap:.5rem;max-height:500px;overflow:auto}.student-full-rank{display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:.7rem;padding:.75rem 1rem;border:1px solid rgba(255,255,255,.07);border-radius:13px;background:rgba(255,255,255,.03)}.student-full-rank.is-me{border-color:rgba(56,189,248,.45);background:rgba(56,189,248,.08)}.student-full-rank .rank-num{font-weight:900;color:#7dd3fc}.student-full-rank b{font-size:.78rem}.student-full-rank small{display:block;color:var(--text-sub);font-size:.62rem}.student-full-rank .rank-points{font-weight:900;color:#86efac}.ranking-message{margin-top:.4rem;color:var(--text-sub);font-size:.68rem}
+@media(max-width:1000px){.student-insight-grid{grid-template-columns:1fr 1fr}.preparedness-map{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.student-insight-grid,.preparedness-map{grid-template-columns:1fr}.my-rank-card{grid-template-columns:1fr 1fr 1fr}}
+
+/* =========================================================
+   PHASE 6 - EMERGENCY PREPAREDNESS CENTER
+   ========================================================= */
+.drills-panel{margin-top:1rem}.drills-panel .panel-title{align-items:center}.drills-panel .panel-title>button{margin-left:auto}.drill-list{display:grid;gap:.55rem;margin-top:1rem}.drill-item{display:grid;grid-template-columns:105px 1fr auto;align-items:center;gap:.8rem;padding:.8rem;border:1px solid rgba(255,255,255,.07);border-radius:13px;background:rgba(255,255,255,.03)}.drill-date{padding:.55rem;border-radius:10px;text-align:center;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.12)}.drill-date b{display:block;font-size:.8rem}.drill-date small,.drill-main small{display:block;color:var(--text-sub);font-size:.62rem;margin-top:.2rem}.drill-main b{font-size:.78rem}.drill-status{font-size:.62rem;font-weight:800;padding:.35rem .6rem;border-radius:999px;background:rgba(34,197,94,.1);color:#86efac}.student-safety-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}.contact-list{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin-top:1rem}.contact-list div{padding:.7rem;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);text-align:center}.contact-list b{display:block;font-size:1.1rem}.contact-list span{display:block;color:var(--text-sub);font-size:.58rem;margin-top:.15rem}.safe-zone-box{margin-top:.7rem;padding:.75rem;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}.safe-zone-box strong{display:block;font-size:.76rem}.safe-zone-box span{display:block;color:var(--text-sub);font-size:.62rem;line-height:1.45;margin-top:.2rem}
+@media(max-width:700px){.student-safety-grid{grid-template-columns:1fr}.drill-item{grid-template-columns:1fr}.contact-list{grid-template-columns:1fr}}
+
+/* ============================================================
+   h(1).zip cinematic disaster backgrounds
+   ============================================================ */
+body.bg-earthquake .animated-bg,
+body.bg-flood .animated-bg,
+body.bg-cyclone .animated-bg,
+body.bg-fire .animated-bg,
+body.bg-chemical .animated-bg,
+body.bg-radiological .animated-bg,
+body.bg-landslide .animated-bg,
+body.bg-biological .animated-bg {
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+body.bg-earthquake .animated-bg {
+    background-image:
+        linear-gradient(180deg, rgba(2,6,12,.32), rgba(2,6,12,.78)),
+        url("../images/disasters/earthquake.png");
+}
+body.bg-flood .animated-bg {
+    background-image:
+        linear-gradient(180deg, rgba(2,10,20,.28), rgba(2,10,20,.76)),
+        url("../images/disasters/flood.png");
+}
+body.bg-cyclone .animated-bg {
+    background-image:
+        linear-gradient(180deg, rgba(2,8,16,.30), rgba(2,8,16,.78)),
+        url("../images/disasters/cyclone.png");
+}
+body.bg-fire .animated-bg {
+    background-image:
+        linear-gradient(180deg, rgba(10,3,2,.28), rgba(10,3,2,.78)),
+        url("../images/disasters/fire-accident.png");
+}
+body.bg-chemical .animated-bg {
+    background-image:
+        linear-gradient(180deg, rgba(4,8,2,.30), rgba(4,8,2,.80)),
+        url("../images/disasters/chemical-gas.png");
+}
+body.bg-radiological .animated-bg {
+    background-image:
+        linear-gradient(180deg, rgba(8,8,2,.28), rgba(8,8,2,.80)),
+        url("../images/disasters/radiological.png");
+}
+/* h(1).zip does not contain dedicated landslide/biological art,
+   so the closest scenes are used instead of leaving a blank background. */
+body.bg-landslide .animated-bg {
+    background-image:
+        linear-gradient(180deg, rgba(8,6,3,.32), rgba(8,6,3,.80)),
+        url("../images/disasters/landslide.png");
+}
+body.bg-biological .animated-bg {
+    background-image:
+        linear-gradient(180deg, rgba(4,10,5,.32), rgba(4,10,5,.80)),
+        url("../images/disasters/biological.png");
+}
+
+.portal-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow: inset 0 0 70px rgba(0,0,0,.18);
+}
+/* =========================================================
+   FINAL DISASTER BACKGROUND FIX
+   MUST BE AT THE VERY END OF THIS CSS FILE
+   ========================================================= */
+
+.animated-bg {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 0 !important;
+
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(3, 8, 18, 0.12),
+            rgba(3, 8, 18, 0.62)
+        ),
+        url("../images/main-boy.png") !important;
+
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    
+}
+
+/* EARTHQUAKE */
+body.bg-earthquake .animated-bg {
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(2, 6, 12, 0.18),
+            rgba(2, 6, 12, 0.68)
+        ),
+        url("../images/disasters/earthquake.png") !important;
+}
+
+/* FLOOD */
+body.bg-flood .animated-bg {
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(2, 10, 20, 0.18),
+            rgba(2, 10, 20, 0.68)
+        ),
+        url("../images/disasters/flood.png") !important;
+}
+
+/* CYCLONE */
+body.bg-cyclone .animated-bg {
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(2, 8, 16, 0.18),
+            rgba(2, 8, 16, 0.68)
+        ),
+        url("../images/disasters/cyclone.png") !important;
+}
+
+/* FIRE */
+body.bg-fire .animated-bg {
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(10, 3, 2, 0.15),
+            rgba(10, 3, 2, 0.68)
+        ),
+        url("../images/disasters/fire-accident.png") !important;
+}
+
+/* CHEMICAL */
+body.bg-chemical .animated-bg {
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(4, 8, 2, 0.15),
+            rgba(4, 8, 2, 0.68)
+        ),
+        url("../images/disasters/chemical-gas.png") !important;
+}
+
+/* RADIOLOGICAL */
+body.bg-radiological .animated-bg {
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(8, 8, 2, 0.15),
+            rgba(8, 8, 2, 0.68)
+        ),
+        url("../images/disasters/radiological.png") !important;
+}
+
+/* LANDSLIDE */
+body.bg-landslide .animated-bg {
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(8, 6, 3, 0.15),
+            rgba(8, 6, 3, 0.68)
+        ),
+        url("../images/disasters/landslide.png") !important;
+}
+
+/* BIOLOGICAL */
+body.bg-biological .animated-bg {
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(4, 10, 5, 0.15),
+            rgba(4, 10, 5, 0.68)
+        ),
+        url("../images/disasters/biological.png") !important;
+}
+
+/* Always keep the image visible */
+body.bg-earthquake .animated-bg,
+body.bg-flood .animated-bg,
+body.bg-cyclone .animated-bg,
+body.bg-fire .animated-bg,
+body.bg-chemical .animated-bg,
+body.bg-radiological .animated-bg,
+body.bg-landslide .animated-bg,
+body.bg-biological .animated-bg {
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+}
+/* =========================================================
+   HERO RIGHT SIDE
+   ========================================================= */
+
+.student-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(430px, 0.9fr);
+    align-items: center;
+    gap: 3rem;
+}
+
+/* Right side container */
+
+.hero-right-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    min-width: 0;
+}
+
+/* Keep orbit nicely sized */
+
+.hero-right-side .disaster-orbit {
+    margin: 0 auto;
+}
+
+/* =========================================================
+   PREPAREDNESS SCORE CARD
+   ========================================================= */
+
+.hero-preparedness-card {
+    width: min(100%, 520px);
+    padding: 1.25rem 1.4rem;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(15, 23, 42, 0.92),
+            rgba(70, 124, 107, 0.82)
+        );
+
+    border: 1px solid rgba(96, 165, 250, 0.25);
+    border-radius: 22px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    backdrop-filter: blur(18px);
+
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-preparedness-card::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 10% 0%,
+            rgba(59, 130, 246, 0.16),
+            transparent 45%
+        );
+
+    pointer-events: none;
+}
+
+/* Header */
+
+.hero-score-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+
+    margin-bottom: 1rem;
+
+    position: relative;
+    z-index: 1;
+}
+
+.hero-score-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: rgba(59, 130, 246, 0.14);
+    border: 1px solid rgba(96, 165, 250, 0.25);
+
+    font-size: 1.3rem;
+}
+
+.hero-score-header span {
+    display: block;
+
+    font-size: 0.72rem;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
+    color: #94a3b8;
+}
+
+.hero-score-header small {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    color: #60a5fa;
+}
+
+/* Main score area */
+
+.hero-score-content {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+
+    position: relative;
+    z-index: 1;
+}
+
+/* =========================================================
+   SCORE CIRCLE
+   ========================================================= */
+
+.hero-score-circle {
+    width: 125px;
+    height: 125px;
+
+    position: relative;
+    flex-shrink: 0;
+}
+
+.hero-score-circle svg {
+    width: 100%;
+    height: 100%;
+
+    transform: rotate(-90deg);
+}
+
+.hero-score-circle circle {
+    fill: none;
+    stroke-width: 8;
+}
+
+.score-track {
+    stroke: rgba(148, 163, 184, 0.14);
+}
+
+.score-progress {
+    stroke: #60a5fa;
+
+    stroke-linecap: round;
+
+    stroke-dasharray: 326.73;
+    stroke-dashoffset: 326.73;
+
+    transition:
+        stroke-dashoffset 1s ease,
+        stroke 0.5s ease;
+}
+
+.hero-score-number {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-score-number strong {
+    font-size: 1.65rem;
+    font-weight: 800;
+
+    color: #f8fafc;
+}
+
+.hero-score-number span {
+    margin-top: 1px;
+
+    font-size: 0.55rem;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
+    color: #64748b;
+}
+
+/* =========================================================
+   SCORE INFORMATION
+   ========================================================= */
+
+.hero-score-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.hero-score-info > strong {
+    display: block;
+
+    font-size: 1rem;
+    font-weight: 800;
+
+    color: #f8fafc;
+
+    margin-bottom: 0.35rem;
+}
+
+.hero-score-info p {
+    margin: 0 0 0.85rem;
+
+    font-size: 0.76rem;
+    line-height: 1.55;
+
+    color: #94a3b8;
+}
+
+/* Button */
+
+.hero-score-btn {
+    border: 0;
+
+    padding: 0.55rem 0.85rem;
+
+    border-radius: 9px;
+
+    background: rgba(59, 130, 246, 0.13);
+    border: 1px solid rgba(96, 165, 250, 0.25);
+
+    color: #93c5fd;
+
+    font-family: inherit;
+    font-size: 0.72rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+.hero-score-btn:hover {
+    background: rgba(59, 130, 246, 0.22);
+    transform: translateY(-2px);
+}
+
+.hero-score-btn i {
+    margin-right: 0.35rem;
+}
+
+/* =========================================================
+   REMOVE / HIDE OLD FEATURED SCORE
+   ========================================================= */
+
+.student-stat-grid .featured-stat {
+    display: none;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+    .student-hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .hero-copy {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-right-side {
+        width: 100%;
+    }
+
+    .hero-preparedness-card {
+        max-width: 600px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .hero-score-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero-score-info {
+        width: 100%;
+    }
+
+    .hero-score-circle {
+        width: 115px;
+        height: 115px;
+    }
+
+    .hero-preparedness-card {
+        padding: 1rem;
+    }
+}
+
+/* =========================================================
+   CINEMATIC BRUSH-REVEAL HERO
+   Uses the supplied safe-world, disaster-world and brush
+   texture. The effect is isolated to the student hero.
+   ========================================================= */
+.student-hero-brush {
+    isolation: isolate;
+    position: relative;
+    overflow: hidden;
+    background: #07101a;
+}
+
+#hero-brush-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: -2;
+    pointer-events: none;
+}
+
+.student-hero-brush::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(3,8,15,.82) 0%, rgba(3,8,15,.48) 42%, rgba(3,8,15,.16) 72%, rgba(3,8,15,.28) 100%),
+        linear-gradient(0deg, rgba(3,8,15,.32), transparent 45%, rgba(3,8,15,.20));
+}
+
+.student-hero-brush > *:not(#hero-brush-canvas) {
+    position: relative;
+    z-index: 1;
+}
+
+.student-hero-brush .hero-copy p,
+.student-hero-brush .hero-score-info p {
+    color: rgba(255,255,255,.84);
+}
+
+.student-hero-brush .hero-score-header span,
+.student-hero-brush .hero-score-header small {
+    color: #fff;
+}
+
+@media (max-width: 900px) {
+    .student-hero-brush {
+        min-height: 700px;
+    }
+}
+
+
+/* =========================================================
+   LOGIN PAGE CINEMATIC BRUSH REVEAL
+   Uses the same supplied safe/disaster images and brush
+   texture as the dashboard, but starts on the login page.
+   ========================================================= */
+.auth-brush-screen {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    padding: 0;
+    overflow: hidden;
+    z-index: 20;
+    isolation: isolate;
+    cursor: none;
+}
+
+#auth-brush-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: -3;
+    pointer-events: none;
+}
+
+.auth-brush-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(3,8,15,.76) 0%, rgba(3,8,15,.38) 42%, rgba(3,8,15,.10) 72%, rgba(3,8,15,.28) 100%),
+        linear-gradient(0deg, rgba(3,8,15,.36), transparent 45%, rgba(3,8,15,.22));
+}
+
+.auth-brush-screen .auth-card {
+    position: relative;
+    z-index: 2;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    background: rgba(5, 12, 20, 0.55);
+    border-color: rgba(255,255,255,.20);
+    box-shadow: 0 30px 80px rgba(0,0,0,.55);
+}
+
+.auth-brush-screen .auth-card::-webkit-scrollbar {
+    width: 5px;
+}
+
+.auth-brush-screen .auth-card::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.25);
+    border-radius: 10px;
+}
+
+/* Hide the normal site navigation while the login screen is active. */
+body:has(#screen-auth.active) nav {
+    z-index: 30;
+    background: rgba(3, 10, 16, .35);
+    backdrop-filter: blur(8px);
+}
+
+@media (max-width: 700px) {
+    .auth-brush-screen {
+        padding: 5rem 1rem 1rem;
+    }
+
+    .auth-brush-screen .auth-card {
+        max-height: calc(100vh - 100px);
+        padding: 2rem 1.4rem;
+    }
+}
+/* =========================================================
+   FULL STUDENT DASHBOARD BRUSH REVEAL
+   ========================================================= */
+
+#screen-dashboard {
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* Full-screen brush canvas */
+
+#dashboard-brush-canvas {
+    position: fixed;
+
+    left: 0;
+    top: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    pointer-events: none;
+
+    z-index: 9999;
+
+    display: block;
+}
+
+
+/*
+   Dashboard content stays above the page background
+   but below the brush reveal canvas.
+*/
+
+#screen-dashboard .student-dashboard {
+    position: relative;
+    z-index: 2;
+}
+
+
+/*
+   Make sure dashboard sections don't create
+   strange stacking problems.
+*/
+
+#screen-dashboard .student-hero,
+#screen-dashboard .student-stat-grid,
+#screen-dashboard .quick-tools,
+#screen-dashboard .disaster-section,
+#screen-dashboard .bottom-dashboard-grid,
+#screen-dashboard .student-insight-grid,
+#screen-dashboard .preparedness-map-panel,
+#screen-dashboard .student-safety-grid,
+#screen-dashboard .kit-strip,
+#screen-dashboard .drills-panel {
+    position: relative;
+}
+
+
+/*
+   Don't show dashboard brush canvas
+   on other screens.
+*/
+
+.view-screen:not(#screen-dashboard) #dashboard-brush-canvas {
+    display: none;
+}
+/* =========================================================
+   EDUSHIELD - LIGHT CURSOR HOVER ZOOM
+   ========================================================= */
+
+/* Smooth transition for dashboard cards */
+.student-dashboard .student-stat-card,
+.student-dashboard .tool-card,
+.student-dashboard .dashboard-panel,
+.student-dashboard .disaster-card,
+.student-dashboard .hero-preparedness-card,
+.student-dashboard .hero-right-side,
+.student-dashboard .safety-card,
+.student-dashboard .kit-strip,
+.student-dashboard .drills-panel,
+.student-dashboard .ranking-preview-panel,
+.student-dashboard .preparedness-map-panel,
+.student-dashboard .achievement-list > *,
+.student-dashboard .recent-result-list > *,
+.student-dashboard .contact-list > *,
+.student-dashboard .safe-zone-box,
+.student-dashboard .kit-items span {
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+    transform-origin: center center;
+}
+
+/* LIGHT ZOOM ON MOUSE HOVER */
+.student-dashboard .student-stat-card:hover,
+.student-dashboard .tool-card:hover,
+.student-dashboard .dashboard-panel:hover,
+.student-dashboard .disaster-card:hover,
+.student-dashboard .hero-preparedness-card:hover,
+.student-dashboard .hero-right-side:hover,
+.student-dashboard .safety-card:hover,
+.student-dashboard .kit-strip:hover,
+.student-dashboard .drills-panel:hover,
+.student-dashboard .ranking-preview-panel:hover,
+.student-dashboard .preparedness-map-panel:hover,
+.student-dashboard .achievement-list > *:hover,
+.student-dashboard .recent-result-list > *:hover,
+.student-dashboard .contact-list > *:hover,
+.student-dashboard .safe-zone-box:hover,
+.student-dashboard .kit-items span:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.28);
+}
+
+/* Slightly stronger effect for clickable cards */
+.student-dashboard .tool-card:hover,
+.student-dashboard .disaster-card:hover {
+    transform: scale(1.035);
+}
+
+/* Keep buttons from looking too exaggerated */
+.student-dashboard button:hover {
+    transform: translateY(-1px);
+}
+
+/* Prevent hover zoom from causing ugly overflow */
+.student-dashboard {
+    overflow: visible;
+}
+
+.student-dashboard .student-stat-card,
+.student-dashboard .tool-card,
+.student-dashboard .dashboard-panel,
+.student-dashboard .disaster-card {
+    will-change: transform;
+}
+
+/* FINAL FIX: dashboard brush reveal stays behind dashboard content */
+#screen-dashboard {
+    position: relative;
+    isolation: isolate;
+    overflow: visible;
+}
+
+#dashboard-brush-canvas {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+}
+
+#screen-dashboard .student-dashboard {
+    position: relative;
+    z-index: 2;
+}
+
+/* Subtle cursor-hover zoom: intentionally small so the UI stays stable. */
+#screen-dashboard .student-stat-card,
+#screen-dashboard .tool-card,
+#screen-dashboard .disaster-card,
+#screen-dashboard .dashboard-panel,
+#screen-dashboard .hero-preparedness-card,
+#screen-dashboard .safety-card,
+#screen-dashboard .kit-strip,
+#screen-dashboard .drills-panel {
+    transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+    transform-origin: center;
+    will-change: transform;
+}
+
+#screen-dashboard .student-stat-card:hover,
+#screen-dashboard .dashboard-panel:hover,
+#screen-dashboard .hero-preparedness-card:hover,
+#screen-dashboard .safety-card:hover,
+#screen-dashboard .kit-strip:hover,
+#screen-dashboard .drills-panel:hover {
+    transform: scale(1.015);
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+
+#screen-dashboard .tool-card:hover,
+#screen-dashboard .disaster-card:hover {
+    transform: scale(1.025);
+    box-shadow: 0 12px 32px rgba(0,0,0,.30);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #screen-dashboard .student-stat-card,
+    #screen-dashboard .tool-card,
+    #screen-dashboard .disaster-card,
+    #screen-dashboard .dashboard-panel,
+    #screen-dashboard .hero-preparedness-card,
+    #screen-dashboard .safety-card,
+    #screen-dashboard .kit-strip,
+    #screen-dashboard .drills-panel {
+        transition: none;
+    }
+}
+/* =========================================================
+   EDUSHIELD CURSOR COLOR GLOW
+   ========================================================= */
+
+#cursor-color-glow {
+    position: fixed;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+
+    transform: translate(-50%, -50%);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(0, 180, 255, 0.22) 0%,
+            rgba(0, 120, 255, 0.12) 25%,
+            rgba(160, 70, 255, 0.08) 45%,
+            transparent 72%
+        );
+
+    filter: blur(12px);
+
+    opacity: 0;
+    transition: opacity 0.35s ease;
+
+    mix-blend-mode: screen;
+}
+
+#cursor-color-glow.active {
+    opacity: 1;
+}
+/* =========================================================
+   EDUSHIELD STUDENT DASHBOARD - CURSOR COLOR GLOW
+   ========================================================= */
+
+#screen-dashboard {
+    --cursor-x: 50vw;
+    --cursor-y: 50vh;
+    --cursor-hue: 200;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Cursor color layer */
+#screen-dashboard::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 5;
+
+    background:
+        radial-gradient(
+            circle 240px at var(--cursor-x) var(--cursor-y),
+            hsla(
+                var(--cursor-hue),
+                100%,
+                65%,
+                0.20
+            ) 0%,
+
+            hsla(
+                var(--cursor-hue),
+                100%,
+                55%,
+                0.10
+            ) 30%,
+
+            transparent 72%
+        );
+
+    mix-blend-mode: screen;
+
+    transition:
+        background 0.15s ease;
+
+    opacity: 0;
+
+    will-change: background;
+}
+
+/* Activate cursor effect */
+#screen-dashboard.cursor-active::after {
+    opacity: 1;
+}
+
+/* Slight zoom around cursor */
+#screen-dashboard .student-dashboard {
+    --dashboard-scale: 1;
+
+    transform:
+        scale(var(--dashboard-scale));
+
+    transform-origin:
+        var(--cursor-x) var(--cursor-y);
+
+    transition:
+        transform 0.25s ease;
+
+    position: relative;
+    z-index: 1;
+}
+
+/* Keep normal size - only subtle visual zoom */
+#screen-dashboard.cursor-zoom .student-dashboard {
+    transform: scale(1.003);
+}
+
+/* Make cards respond slightly to cursor */
+#screen-dashboard .dashboard-panel,
+#screen-dashboard .student-stat-card,
+#screen-dashboard .tool-card {
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+/* Hover color highlight */
+#screen-dashboard .dashboard-panel:hover,
+#screen-dashboard .student-stat-card:hover,
+#screen-dashboard .tool-card:hover {
+    border-color: rgba(80, 210, 255, 0.55);
+
+    box-shadow:
+        0 0 25px rgba(50, 190, 255, 0.12),
+        inset 0 0 25px rgba(50, 190, 255, 0.04);
+}
+
+/* Prevent dashboard content from blocking cursor layer */
+#screen-dashboard .student-dashboard {
+    pointer-events: auto;
+}
+/* =========================================================
+   SAME CARD STYLE FOR ALL STUDENT DASHBOARD CARDS
+   ========================================================= */
+
+/* Common card design */
+.dashboard-panel,
+.student-stat-card {
+    border: 1px solid rgba(255, 255, 255, 0.09) !important;
+
+    background: rgba(80, 18, 69, 0.7) !important;
+
+    border-radius: 18px;
+
+    color: var(--text-main);
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+/* Hover - EXACTLY like tool-card */
+.dashboard-panel:hover,
+.student-stat-card:hover {
+    transform: translateY(-4px);
+
+    border-color:
+        rgba(56, 189, 248, 0.4) !important;
+
+    background:
+        rgba(20, 34, 52, 0.85) !important;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.18);
+}
+
+
+/* =========================================================
+   ACHIEVEMENTS
+   ========================================================= */
+
+.achievements-panel {
+    background: rgba(60, 70, 5, 0.7) !important;
+}
+
+.achievements-panel:hover {
+    background: rgba(20, 34, 52, 0.85) !important;
+
+    border-color:
+        rgba(56, 189, 248, 0.4) !important;
+}
+
+
+/* =========================================================
+   RECENT QUIZ RESULTS
+   ========================================================= */
+
+.recent-results-panel {
+    background: rgba(53, 6, 6, 0.7) !important;
+}
+
+.recent-results-panel:hover {
+    background: rgba(20, 34, 52, 0.85) !important;
+
+    border-color:
+        rgba(56, 189, 248, 0.4) !important;
+}
+
+
+/* =========================================================
+   MY RANKING
+   ========================================================= */
+
+.ranking-preview-panel {
+    background: rgba(6, 53, 27, 0.7) !important;
+}
+
+.ranking-preview-panel:hover {
+    background: rgba(20, 34, 52, 0.85) !important;
+
+    border-color:
+        rgba(56, 189, 248, 0.4) !important;
+}
+
+
+/* =========================================================
+   PREPAREDNESS MAP
+   ========================================================= */
+
+.preparedness-map-panel {
+    background: rgba(39, 6, 53, 0.7) !important;
+}
+
+.preparedness-map-panel:hover {
+    background: rgba(20, 34, 52, 0.85) !important;
+
+    border-color:
+        rgba(56, 189, 248, 0.4) !important;
+}
+
+
+/* =========================================================
+   LEARNING JOURNEY
+   ========================================================= */
+
+.progress-panel {
+    background: rgba(53, 35, 6, 0.7) !important;
+}
+
+.progress-panel:hover {
+    background: rgba(20, 34, 52, 0.85) !important;
+
+    border-color:
+        rgba(56, 189, 248, 0.4) !important;
+}
+
+
+/* =========================================================
+   DAILY SAFETY TIP
+   ========================================================= */
+
+.tips-panel {
+    background: rgba(6, 15, 53, 0.7) !important;
+}
+
+.tips-panel:hover {
+    background: rgba(20, 34, 52, 0.85) !important;
+
+    border-color:
+        rgba(56, 189, 248, 0.4) !important;
+}
+
+
+/* =========================================================
+   SAFETY CARDS
+   ========================================================= */
+
+.safety-card {
+    background: rgba(6, 53, 45, 0.7) !important;
+}
+
+.safety-card:hover {
+    background: rgba(20, 34, 52, 0.85) !important;
+
+    border-color:
+        rgba(56, 189, 248, 0.4) !important;
+}
+
+
+/* =========================================================
+   EMERGENCY KIT
+   ========================================================= */
+
+.kit-strip {
+    background: rgba(53, 6, 6, 0.7) !important;
+}
+
+.kit-strip:hover {
+    background: rgba(20, 34, 52, 0.85) !important;
+
+    border-color:
+        rgba(56, 189, 248, 0.4) !important;
+}
+
+
+/* =========================================================
+   UPCOMING DRILLS
+   ========================================================= */
+
+.drills-panel {
+    background: rgba(51, 53, 6, 0.7) !important;
+}
+
+.drills-panel:hover {
+    background: rgba(20, 34, 52, 0.85) !important;
+
+    border-color:
+        rgba(56, 189, 248, 0.4) !important;
+}
+
+
+/* =========================================================
+   STUDENT STAT CARDS
+   ========================================================= */
+
+.student-stat-card {
+    padding: 1.25rem;
+}
+
+.student-stat-card:hover {
+    transform: translateY(-4px);
+
+    background:
+        rgba(20, 34, 52, 0.85) !important;
+
+    border-color:
+        rgba(56, 189, 248, 0.4) !important;
+}
+
+
+/* =========================================================
+   QUICK ACCESS CARDS
+   Keep your existing style
+   ========================================================= */
+
+.tool-card {
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.tool-card:hover {
+    transform: translateY(-4px);
+
+    border-color:
+        rgba(56, 189, 248, 0.4);
+
+    background:
+        rgba(20, 34, 52, 0.85);
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.18);
+}
