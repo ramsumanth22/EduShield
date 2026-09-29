@@ -1,6 +1,6 @@
 // EduShield frontend ↔ FastAPI backend integration
 
-const EDU_API_BASE_URL = window.API_BASE_URL || 'http://127.0.0.1:8000';
+const EDU_API_BASE_URL = window.API_BASE_URL || 'https://edushield-7uac.onrender.com';
 
 let activeDisaster = null;
 let userScores = {};
@@ -510,7 +510,7 @@ async function calculateFinalScore() {
         console.error('Cannot connect to EduShield server:', error);
         alert(
             'Cannot connect to the EduShield server.\n\n' +
-            'Check that FastAPI is running at http://127.0.0.1:8000 and that the frontend is opened through a local web server (not file://).'
+            'Check that FastAPI is running at https://edushield-7uac.onrender.com and that the frontend is opened through a local web server (not file://).'
         );
     }
 }

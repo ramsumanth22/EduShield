@@ -29,7 +29,7 @@ pip install fastapi uvicorn pymongo python-dotenv bcrypt PyJWT email-validator
 uvicorn main:app --reload
 ```
 
-Open `http://127.0.0.1:8000/docs` to test the API.
+Open `https://edushield-7uac.onrender.com/docs` to test the API.
 
 ## 4. Start the frontend
 

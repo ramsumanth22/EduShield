@@ -1,6 +1,6 @@
 // EduShield authentication: Student + Staff role-based login/register.
 
-const API_BASE_URL = 'http://127.0.0.1:8000';
+const API_BASE_URL = 'https://edushield-7uac.onrender.com';
 
 let isRegister = false;
 let currentUser = null;

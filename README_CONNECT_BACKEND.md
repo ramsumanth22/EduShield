@@ -36,7 +36,7 @@ uvicorn main:app --reload
 
 Expected:
 
-`Uvicorn running on http://127.0.0.1:8000`
+`Uvicorn running on https://edushield-7uac.onrender.com`
 
 ## Run the frontend
 
